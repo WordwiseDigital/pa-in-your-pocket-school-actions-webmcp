@@ -3,6 +3,28 @@ import { freshInitialState } from "./data";
 import { registerSchoolActionTools } from "./webmcp";
 
 describe("WebMCP tools", () => {
+  it("supports Chrome executeTool calls that omit callback options", async () => {
+    const tools: WebMCPTool[] = [];
+    const context: WebMCPModelContext = {
+      registerTool: vi.fn(async (tool) => { tools.push(tool); }),
+    };
+    const controller = new AbortController();
+
+    await registerSchoolActionTools(
+      context,
+      { getState: freshInitialState, prepareAction: vi.fn(), selectAction: vi.fn() },
+      controller.signal,
+    );
+
+    await expect(
+      tools.find((tool) => tool.name === "list_school_actions")?.execute({
+        child: "all",
+        status: "pending",
+        dueBefore: "2026-09-04",
+      }),
+    ).resolves.toMatchObject({ count: 2 });
+  });
+
   it("stops registration when the component lifecycle is cancelled", async () => {
     const tools: WebMCPTool[] = [];
     const controller = new AbortController();

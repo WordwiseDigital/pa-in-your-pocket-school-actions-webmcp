@@ -11,7 +11,7 @@ interface WebMCPTool {
   annotations?: WebMCPToolAnnotations;
   execute: (
     input: Record<string, unknown>,
-    options: { signal: AbortSignal },
+    options?: { signal: AbortSignal },
   ) => Promise<unknown> | unknown;
 }
 
@@ -25,4 +25,3 @@ interface WebMCPModelContext {
 interface Document {
   modelContext?: WebMCPModelContext;
 }
-

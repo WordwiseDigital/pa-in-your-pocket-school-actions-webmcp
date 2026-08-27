@@ -59,7 +59,7 @@ export async function registerSchoolActionTools(
       },
       annotations: { readOnlyHint: true, untrustedContentHint: false },
       execute: async (input, options) => {
-        assertNotCancelled(options.signal);
+        assertNotCancelled(options?.signal ?? signal);
         const filter: ActionFilter = {
           child: input.child as ChildName | "all" | undefined,
           status: input.status as ActionFilter["status"],
@@ -102,7 +102,7 @@ export async function registerSchoolActionTools(
       },
       annotations: { readOnlyHint: true, untrustedContentHint: true },
       execute: async (input, options) => {
-        assertNotCancelled(options.signal);
+        assertNotCancelled(options?.signal ?? signal);
         const actionId = requiredString(input, "actionId");
         const action = services.getState().actions.find((item) => item.id === actionId);
         if (!action) throw new Error(`Unknown school action: ${actionId}`);
@@ -155,7 +155,7 @@ export async function registerSchoolActionTools(
       },
       annotations: { readOnlyHint: false, untrustedContentHint: false },
       execute: async (input, options) => {
-        assertNotCancelled(options.signal);
+        assertNotCancelled(options?.signal ?? signal);
         const actionId = requiredString(input, "actionId");
         const response = requiredString(input, "response") as ResponseChoice;
         const action = services.getState().actions.find((item) => item.id === actionId);
