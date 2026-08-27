@@ -4,6 +4,8 @@ An experimental WebMCP competition prototype that shows how a parent-facing assi
 
 > **Demo only:** Ava, Noah, their school notices, all form responses and every submission are fictional. Nothing is sent to a school, calendar, payment service or PA in Your Pocket production system.
 
+Live demo: [pa-school-actions.web.app](https://pa-school-actions.web.app/)
+
 ## The idea
 
 School messages often scatter deadlines and actions across notices. This prototype turns three fictional notices into a calm action list that works in two ways:
@@ -55,8 +57,11 @@ firebase deploy --only hosting --project YOUR_PROJECT_ID
 
 `firebase.json` sets the origin-isolation and permissions-policy response headers required for current WebMCP browser support. Confirm them on the deployed URL; do not treat a successful CLI deploy as proof that the tools are discoverable.
 
+The current demo is hosted as the dedicated `pa-school-actions` site in the existing `pa-in-your-pocket-app` Firebase project. The existing PA site was not changed.
+
 ## Project documentation
 
+- [Project wiki and current status](docs/WIKI.md)
 - [Architecture and state flow](docs/ARCHITECTURE.md)
 - [Tool contracts and security boundaries](docs/TOOL-CONTRACTS.md)
 - [Testing and eval prompts](docs/TESTING.md)
@@ -71,4 +76,3 @@ This is a standalone competition experiment, not a released PA in Your Pocket fe
 ## Licence
 
 [MIT](LICENSE) © Annabel Koekemoer.
-
