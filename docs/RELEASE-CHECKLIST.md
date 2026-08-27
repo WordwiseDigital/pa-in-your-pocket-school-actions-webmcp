@@ -8,7 +8,7 @@ This file deliberately separates build, publication and submission evidence.
 - [x] Automated tests pass (13 tests on 27 August 2026)
 - [x] Production build passes
 - [x] Manual portal works without WebMCP at desktop and 390px mobile widths
-- [ ] Three tools pass the browser acceptance run
+- [x] Three tools pass the browser acceptance run
 - [x] Reset restores the deterministic seed
 
 ## Public repository
@@ -26,7 +26,7 @@ This file deliberately separates build, publication and submission evidence.
 - [x] Live URL returns HTTP 200
 - [x] `Origin-Agent-Cluster: ?1` present
 - [x] `Permissions-Policy` permits `tools` for self
-- [ ] All three tools discoverable on the live URL
+- [x] All three tools discoverable on the live URL
 
 ## Demo evidence
 
