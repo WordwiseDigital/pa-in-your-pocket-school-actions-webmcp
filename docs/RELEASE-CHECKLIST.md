@@ -21,11 +21,11 @@ This file deliberately separates build, publication and submission evidence.
 
 ## Firebase deployment
 
-- [ ] Dedicated Firebase project/site selected
-- [ ] Production build deployed
-- [ ] Live URL returns HTTP 200
-- [ ] `Origin-Agent-Cluster: ?1` present
-- [ ] `Permissions-Policy` permits `tools` for self
+- [x] Existing Firebase project/site selected without touching the existing PA site
+- [x] Production build deployed to `pa-school-actions`
+- [x] Live URL returns HTTP 200
+- [x] `Origin-Agent-Cluster: ?1` present
+- [x] `Permissions-Policy` permits `tools` for self
 - [ ] All three tools discoverable on the live URL
 
 ## Demo evidence
