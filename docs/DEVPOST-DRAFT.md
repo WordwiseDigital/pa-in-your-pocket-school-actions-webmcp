@@ -2,29 +2,29 @@
 
 ## Project title
 
-PA in Your Pocket: School Actions
+PA in Your Pocket: Household Actions
 
 ## Tagline
 
-A human-controlled school admin assistant that can find actions and prepare responses without taking away the parent's final say.
+A human-controlled household assistant that turns school, calendar and home admin into one calm next step without taking away the parent's final say.
 
 ## Inspiration
 
-Parents regularly need to turn school notices into deadlines, consent decisions and small administrative actions. The hard part is not one form; it is finding what matters across children and messages while retaining confidence about what an assistant did.
+Parents regularly need to turn school notices, calendar commitments and household loose ends into clear next steps. The hard part is not one form; it is finding what matters across people and messages while retaining confidence about what an assistant did.
 
 ## What it does
 
-The prototype presents three deterministic fictional school actions for two fictional children. A parent can use the portal manually, while a WebMCP-capable agent can:
+The prototype presents five deterministic fictional actions across school, calendar and home administration. A parent can use the portal manually, while a WebMCP-capable agent can:
 
-1. filter actions by child, status and deadline;
-2. open an action and explain its requirements;
-3. prepare the visible response form for review.
+1. filter a unified action queue by area, owner, status and deadline;
+2. open an action and explain its source, confidence, requirements and next step;
+3. prepare the visible school response, calendar proposal or household follow-up for review.
 
-The agent cannot perform the final submission. The parent can edit the draft and must press the visible submit button. A simple audit history separates “prepared by agent” from “submitted by parent.”
+The agent cannot perform the final approval or submission. The parent can edit the draft and must press the visible final button. A simple audit history separates “prepared by agent” from “approved/submitted by parent.”
 
 ## How we built it
 
-The app is a static React, Vite and TypeScript site. Three tools use the WebMCP imperative API through `document.modelContext`. React reducer state is persisted locally in the browser. Firebase Hosting serves the production build with origin-isolation and tools permissions headers.
+The app is a static React, Vite and TypeScript site. Six tools use the WebMCP imperative API through `document.modelContext`. React reducer state is persisted locally in the browser. Firebase Hosting serves the production build with origin-isolation and tools permissions headers.
 
 ## Challenges
 

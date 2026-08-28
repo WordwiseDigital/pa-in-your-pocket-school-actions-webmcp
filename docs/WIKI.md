@@ -1,4 +1,4 @@
-# PA in Your Pocket: School Actions — project wiki
+# PA in Your Pocket: Household Actions — project wiki
 
 Last updated: 28 August 2026
 
@@ -14,14 +14,14 @@ This is the durable project status page for the standalone WebMCP competition pr
 | Local Git | Clean `main`, tracking `origin/main` |
 | Firebase | Existing project `pa-in-your-pocket-app`, dedicated Hosting site `pa-school-actions` |
 | Live demo | https://pa-school-actions.web.app/ |
-| Native WebMCP | Verified in Chrome 151 with WebMCP flags on the live URL |
+| Native WebMCP | Verified in Chrome 151 with six tools on the live URL |
 | Public GitHub repository | https://github.com/WordwiseDigital/pa-in-your-pocket-school-actions-webmcp — public `main`, README and MIT licence verified |
 | Competition submission | Not submitted |
 | Video | Script exists; recording and public upload remain outstanding |
 
 ## Local expansion candidate
 
-The local `0.2.0` candidate expands the public prototype into one fictional household queue covering School, Calendar and Home. It adds paste/photo/voice capture review, confidence and next-step facts, simulated calendar/home approvals, an approval centre, and three unified PA WebMCP tools. It has not been deployed or browser-accepted yet; the live URL above remains the previously verified three-school-tool deployment.
+The `0.2.0` expansion is deployed and browser-accepted on the dedicated live URL. It expands the public prototype into one fictional household queue covering School, Calendar and Home. It adds paste/photo/voice capture review, confidence and next-step facts, simulated calendar/home approvals, an approval centre, and three unified PA WebMCP tools. Detailed evidence is in [LIVE-PROMPT-EVIDENCE-2026-08-28.md](LIVE-PROMPT-EVIDENCE-2026-08-28.md).
 
 ## Verified live acceptance
 
@@ -33,12 +33,15 @@ The local `0.2.0` candidate expands the public prototype into one fictional hous
 - The visible parent button alone changed the fictional action to submitted and created the Parent audit event.
 - Reset restored three pending actions and an empty audit.
 - Five natural-language prompt scenarios passed live; detailed results are in [LIVE-PROMPT-EVIDENCE-2026-08-28.md](LIVE-PROMPT-EVIDENCE-2026-08-28.md).
+- Expanded revision `0eeb3be` passed live HTTP/header checks and native Chrome discovery for all six tools.
+- The expanded live tab was left with three prepared fictional drafts, zero approvals and zero submissions.
 
 ## Local candidate checks
 
 - `npm test`: 20 tests passed locally.
 - `npm run build`: production build passed locally.
-- Native Chrome discovery for the six-tool expanded build is pending deployment.
+- `0eeb3be` is pushed to the public `main` branch and deployed to the dedicated Hosting site.
+- Native Chrome discovery and prepare-only acceptance passed for the six-tool expanded build.
 
 ## Safety boundary
 
@@ -46,10 +49,9 @@ All children, notices, contact details and submissions are fictional. The app ha
 
 ## Resume tomorrow
 
-1. Deploy the local household expansion only after the expanded browser acceptance run is ready.
-2. Repeat native Chrome discovery and prompt evaluation for all six tools.
-3. Record and publicly upload the 90–150 second narrated demo from the verified expanded URL.
-4. Replace the remaining Devpost video placeholder with the verified public link, then complete the submission yourself.
+1. Record and publicly upload the 90–150 second narrated demo from the verified expanded URL.
+2. Replace the remaining Devpost video placeholder with the verified public link.
+3. Complete the Devpost submission yourself before the stated deadline.
 
 Do not call the project submitted until Devpost confirms it. Do not call the video public until its YouTube page is readable without account access.
 

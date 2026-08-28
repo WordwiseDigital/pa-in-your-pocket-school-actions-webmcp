@@ -25,3 +25,30 @@ All names, contact details, notes and actions in this evidence are fictional dem
 - Activity history contained three `Agent` preparation entries.
 - Submitted count remained `0`.
 - The page was intentionally left in the prepared fictional state for review; the previously verified reset flow remains available.
+
+## Expanded 0.2.0 acceptance
+
+Source revision: `0eeb3be`
+Deployment: Firebase Hosting site `pa-school-actions` in project `pa-in-your-pocket-app`
+Browser: external Chrome 151 with native WebMCP enabled
+
+Live HTTP verification passed with status `200`, title `PA in Your Pocket: Household Actions`, `Origin-Agent-Cluster: ?1`, `Permissions-Policy: tools=(self)` and the intended Content Security Policy.
+
+Chrome discovered exactly six tools with the expected read-only, untrusted-content and prepare-only annotations:
+
+- `get_pa_action_details`
+- `get_school_action_details`
+- `list_pa_actions`
+- `list_school_actions`
+- `prepare_pa_action`
+- `prepare_school_action`
+
+| Acceptance | Tool path | Observed result |
+| --- | --- | --- |
+| List the unified queue before Friday | `list_pa_actions` with `area=all`, `status=pending`, `dueBefore=2026-09-04` | Count `4`: Ava museum, Noah photo consent, family calendar check-in and kitchen repair follow-up |
+| Inspect a household calendar action | `get_pa_action_details` for `household-calendar-check` | Returned calendar type, requirements, fictional source, medium confidence and suggested next step |
+| Prepare the family calendar proposal | `prepare_pa_action` for `household-calendar-check` | Returned `submitted: false`, `externalWrite: false`; visible action became Ready for approval |
+| Prepare the household repair follow-up | `prepare_pa_action` for `home-repair-follow-up` | Returned `submitted: false`, `externalWrite: false`; visible action became Ready for approval |
+| Preserve the legacy school contract | `prepare_school_action` for `ava-summer-uniform` | Returned `submitted: false`; visible school action became Ready for approval |
+
+Final expanded visible state: five fictional items, three waiting in the Approval centre, three Agent preparation audit entries, zero approved and zero submitted. No external system was changed.

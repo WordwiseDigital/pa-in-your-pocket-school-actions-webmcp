@@ -8,7 +8,7 @@ This file deliberately separates build, publication and submission evidence.
 - [x] Automated tests pass (20 tests on 28 August 2026)
 - [x] Production build passes
 - [x] Manual portal works without WebMCP at desktop and 390px mobile widths
-- [x] Six local WebMCP tools pass automated contract coverage; the three-tool live run remains evidence for the previous deployment
+- [x] Six WebMCP tools pass automated contract coverage and live native Chrome acceptance
 - [x] Reset restores the deterministic seed
 
 ## Local household expansion candidate
@@ -17,8 +17,9 @@ This file deliberately separates build, publication and submission evidence.
 - [x] Local paste, photo preview and browser voice capture fallback
 - [x] Capture review with source, deadline, owner, confidence and next step
 - [x] Prepared-action approval centre with simulated-only approval
-- [ ] Deploy the expanded build and repeat native Chrome WebMCP acceptance
-- [ ] Update live prompt evidence and record a new expanded demo
+- [x] Deploy the expanded build and repeat native Chrome WebMCP acceptance
+- [x] Update live prompt evidence for the expanded build
+- [ ] Record the expanded demo video
 
 ## Public repository
 
@@ -35,7 +36,7 @@ This file deliberately separates build, publication and submission evidence.
 - [x] Live URL returns HTTP 200
 - [x] `Origin-Agent-Cluster: ?1` present
 - [x] `Permissions-Policy` permits `tools` for self
-- [x] All three tools discoverable on the live URL
+- [x] All six tools discoverable on the live URL
 
 ## Demo evidence
 
@@ -46,6 +47,7 @@ This file deliberately separates build, publication and submission evidence.
 - [x] Parent edit remains after agent preparation
 - [x] Parent-only submission shown in audit history
 - [x] Local household approval remains separate from school submission and never performs an external write
+- [x] Unified queue, household details and prepare-only calls accepted in native Chrome
 
 ## Submission
 
