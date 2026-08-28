@@ -30,7 +30,7 @@ This file deliberately separates build, publication and submission evidence.
 
 ## Demo evidence
 
-- [ ] Five or more natural-language prompt variations pass in a live WebMCP-capable agent (eight cases are documented)
+- [x] Five or more natural-language prompt variations pass in a live WebMCP-capable agent (five cases recorded in `docs/LIVE-PROMPT-EVIDENCE-2026-08-28.md`)
 - [x] Invalid ID and invalid response tested
 - [x] Repeated call tested
 - [x] Cancellation tested, including registration lifecycle cancellation

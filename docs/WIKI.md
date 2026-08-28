@@ -28,6 +28,7 @@ This is the durable project status page for the standalone WebMCP competition pr
 - `prepare_school_action` populated Ava's visible form and returned `submitted: false`.
 - The visible parent button alone changed the fictional action to submitted and created the Parent audit event.
 - Reset restored three pending actions and an empty audit.
+- Five natural-language prompt scenarios passed live; detailed results are in [LIVE-PROMPT-EVIDENCE-2026-08-28.md](LIVE-PROMPT-EVIDENCE-2026-08-28.md).
 
 ## Safety boundary
 
@@ -35,9 +36,8 @@ All children, notices, contact details and submissions are fictional. The app ha
 
 ## Resume tomorrow
 
-1. Run the documented natural-language prompt evaluations in a live WebMCP-capable agent; record results for the five-or-more-prompt checklist item.
-2. Record and publicly upload the 90–150 second narrated demo from the live URL.
-3. Replace the remaining Devpost video placeholder with the verified public link, then complete the submission yourself.
+1. Record and publicly upload the 90–150 second narrated demo from the live URL.
+2. Replace the remaining Devpost video placeholder with the verified public link, then complete the submission yourself.
 
 Do not call the project submitted until Devpost confirms it. Do not call the video public until its YouTube page is readable without account access.
 
@@ -46,5 +46,6 @@ Do not call the project submitted until Devpost confirms it. Do not call the vid
 - [Release checklist](RELEASE-CHECKLIST.md)
 - [Morning handoff](HANDOFF-2026-08-28.md)
 - [Testing and prompt evaluations](TESTING.md)
+- [Live prompt evidence](LIVE-PROMPT-EVIDENCE-2026-08-28.md)
 - [Demo script](DEMO-SCRIPT.md)
 - [Devpost draft](DEVPOST-DRAFT.md)
