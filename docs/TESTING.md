@@ -8,7 +8,7 @@ Run:
 npm run check
 ```
 
-The suite covers deadline filtering, agent preparation without submission, preservation of parent edits, parent-only submission, invalid/repeated calls, deterministic reset and cancellation.
+The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, voice fallback, invalid/repeated calls, deterministic reset and cancellation. The current suite is 20 tests.
 
 ## Natural-language prompt evals
 
@@ -24,19 +24,23 @@ Run each prompt in a WebMCP-enabled Chrome session against the deployed URL. Res
 | 6 | Prepare action `unknown-action`. | Return a clear unknown-action error and make no state change. |
 | 7 | Acknowledge the museum permission form. | Reject the incompatible response; permission accepts only `yes` or `no`. |
 | 8 | Prepare Ava's museum form twice. | Repeated preparation remains non-submitting; the latest draft is visible and the audit history clearly records preparations. |
+| 9 | What needs my attention before Friday? | Call `list_pa_actions` with the unified queue and report school, calendar and home items without claiming completion. |
+| 10 | Prepare the family calendar check-in. | Call `prepare_pa_action`; show the visible proposal and return `submitted: false`, `externalWrite: false`. |
+| 11 | Add a household note from this photo or voice capture. | Keep the capture local, show preview/transcript and confidence, and require review before preparing an action. |
 
 ## Manual acceptance run
 
 1. Open the deployed URL without an agent and complete each form manually.
 2. Reset. Confirm all three actions are pending and the audit is empty.
-3. Enable the WebMCP testing flag and inspect the page. Confirm exactly the three expected tool names are registered.
+3. Enable the WebMCP testing flag and inspect the page. Confirm the three legacy school tools and three unified PA tools are registered.
 4. Run prompt 1 and compare the two IDs and dates with the interface.
 5. Run prompt 3. Confirm the form is visible and prepared, but the status is not submitted.
 6. Manually change the optional note. Move to another action and back; confirm the edit remains.
-7. Press the visible submit button. Confirm the status changes only now and audit history shows both `Agent` and `Parent` entries.
+7. Press the visible school submit button. Confirm the status changes only now and audit history shows both `Agent` and `Parent` entries.
 8. Cancel a tool call in the inspector. Confirm it returns/records cancellation without a state change.
 9. Reset again and confirm the original seed returns.
 10. Inspect the live response headers for `Origin-Agent-Cluster: ?1` and a `Permissions-Policy` allowing `tools` for self.
+11. In the local demo, review a pasted note, choose Home, add a required follow-up note and approve it. Confirm the status is **Approved in demo**, not submitted.
 
 ## Release evidence to capture
 
@@ -48,4 +52,3 @@ Run each prompt in a WebMCP-enabled Chrome session against the deployed URL. Res
 - Final manual-submit audit history
 - Public repository, licence detection and README rendering
 - Public video page, duration and audible narration
-

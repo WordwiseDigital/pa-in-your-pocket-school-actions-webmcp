@@ -80,4 +80,36 @@ describe("school action state", () => {
     const reset = reducer(changed, { type: "reset" });
     expect(reset).toEqual(freshInitialState());
   });
+
+  it("filters the unified queue by area and keeps household items separate from children", () => {
+    const result = filterActions(freshInitialState().actions, { area: "all", child: "Household" });
+    expect(result.map((action) => action.id)).toEqual([
+      "household-calendar-check",
+      "home-repair-follow-up",
+    ]);
+  });
+
+  it("approves a prepared household action without creating a submitted state", () => {
+    let state = reducer(freshInitialState(), {
+      type: "agent-prepare",
+      actionId: "home-repair-follow-up",
+      draft: { note: "Ask for the revised repair timeline." },
+    });
+    state = reducer(state, { type: "parent-approve", actionId: "home-repair-follow-up" });
+    const approved = state.actions.find((action) => action.id === "home-repair-follow-up")!;
+    expect(approved.status).toBe("approved");
+    expect(approved.status).not.toBe("submitted");
+    expect(state.audit[0]).toMatchObject({ actor: "Parent", event: "approved" });
+  });
+
+  it("requires a note before a household follow-up can be approved", () => {
+    let state = reducer(freshInitialState(), {
+      type: "agent-prepare",
+      actionId: "home-repair-follow-up",
+      draft: {},
+    });
+    expect(() => reducer(state, { type: "parent-approve", actionId: "home-repair-follow-up" })).toThrow(
+      "Complete the required fields",
+    );
+  });
 });

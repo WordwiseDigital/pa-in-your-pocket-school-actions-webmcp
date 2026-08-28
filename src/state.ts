@@ -1,18 +1,13 @@
 import { freshInitialState } from "./data";
-import type {
-  ActionDraft,
-  ActionFilter,
-  AppState,
-  AuditEntry,
-  SchoolAction,
-} from "./types";
+import type { ActionDraft, ActionFilter, AppState, AuditEntry, PAAction } from "./types";
 
-const STORAGE_KEY = "pa-school-actions-webmcp-v1";
+const STORAGE_KEY = "pa-school-actions-webmcp-v2";
 
 export type AppAction =
   | { type: "agent-prepare"; actionId: string; draft: Partial<ActionDraft> }
   | { type: "parent-update"; actionId: string; draft: Partial<ActionDraft> }
   | { type: "parent-submit"; actionId: string }
+  | { type: "parent-approve"; actionId: string }
   | { type: "reset" };
 
 function auditEntry(
@@ -31,21 +26,37 @@ function auditEntry(
   };
 }
 
-export function isDraftComplete(action: SchoolAction): boolean {
-  if (!action.draft.response) return false;
-  if (action.kind === "permission" && !action.draft.emergencyContact.trim()) {
-    return false;
+export function isDraftComplete(action: PAAction): boolean {
+  if (action.actionType === "school-response") {
+    if (!action.draft.response) return false;
+    if (action.kind === "permission" && !action.draft.emergencyContact.trim()) return false;
+    return true;
   }
-  return true;
+  if (action.actionType === "calendar-event") {
+    return Boolean(
+      action.draft.proposedTitle.trim() &&
+        action.draft.proposedDate.trim() &&
+        action.draft.proposedTime.trim(),
+    );
+  }
+  return Boolean(action.draft.response && action.draft.note.trim());
+}
+
+function getCurrent(state: AppState, actionId: string): PAAction {
+  const current = state.actions.find((item) => item.id === actionId);
+  if (!current) throw new Error(`Unknown school action: ${actionId}`);
+  return current;
 }
 
 export function reducer(state: AppState, action: AppAction): AppState {
   if (action.type === "reset") return freshInitialState();
 
-  const current = state.actions.find((item) => item.id === action.actionId);
-  if (!current) throw new Error(`Unknown school action: ${action.actionId}`);
+  const current = getCurrent(state, action.actionId);
   if (current.status === "submitted" && action.type !== "parent-update") {
     throw new Error("Submitted actions cannot be prepared or submitted again.");
+  }
+  if (current.status === "approved" && action.type !== "parent-update") {
+    throw new Error("Completed actions cannot be prepared or approved again.");
   }
 
   if (action.type === "parent-update") {
@@ -60,23 +71,18 @@ export function reducer(state: AppState, action: AppAction): AppState {
   }
 
   if (action.type === "agent-prepare") {
-    const nextActions = state.actions.map((item) =>
-      item.id === action.actionId
-        ? {
-            ...item,
-            status: "prepared" as const,
-            draft: { ...item.draft, ...action.draft },
-          }
-        : item,
-    );
     return {
-      actions: nextActions,
+      actions: state.actions.map((item) =>
+        item.id === action.actionId
+          ? { ...item, status: "prepared" as const, draft: { ...item.draft, ...action.draft } }
+          : item,
+      ),
       audit: [
         auditEntry(
           action.actionId,
           "Agent",
           "prepared",
-          "The agent prepared the visible response for parent review.",
+          "The agent prepared a visible draft for parent review. No external action was taken.",
         ),
         ...state.audit,
       ],
@@ -85,36 +91,40 @@ export function reducer(state: AppState, action: AppAction): AppState {
 
   const nextAction = { ...current };
   if (!isDraftComplete(nextAction)) {
-    throw new Error("Complete the required response fields before submitting.");
+    throw new Error(
+      action.type === "parent-submit"
+        ? "Complete the required response fields before submitting."
+        : "Complete the required fields before approving this demo action.",
+    );
   }
 
+  const isSchoolSubmit = action.type === "parent-submit";
   return {
     actions: state.actions.map((item) =>
-      item.id === action.actionId ? { ...item, status: "submitted" } : item,
+      item.id === action.actionId
+          ? { ...item, status: isSchoolSubmit ? "submitted" : "approved" }
+        : item,
     ),
     audit: [
       auditEntry(
         action.actionId,
         "Parent",
-        "submitted",
-        "The parent reviewed the response and used the visible submit button.",
+        isSchoolSubmit ? "submitted" : "approved",
+        isSchoolSubmit
+          ? "The parent reviewed the response and used the visible submit button."
+          : "The parent approved this simulated demo action. No external calendar, reminder or vendor system was changed.",
       ),
       ...state.audit,
     ],
   };
 }
 
-export function filterActions(
-  actions: SchoolAction[],
-  filter: ActionFilter = {},
-): SchoolAction[] {
+export function filterActions(actions: PAAction[], filter: ActionFilter = {}): PAAction[] {
   return actions.filter((action) => {
-    if (filter.child && filter.child !== "all" && action.child !== filter.child) {
-      return false;
-    }
-    if (filter.status && filter.status !== "all" && action.status !== filter.status) {
-      return false;
-    }
+    if (filter.child && filter.child !== "all" && action.child !== filter.child) return false;
+    // An omitted area retains the original School Actions API behaviour.
+    if (filter.area ? filter.area !== "all" && action.area !== filter.area : action.area !== "school") return false;
+    if (filter.status && filter.status !== "all" && action.status !== filter.status) return false;
     if (filter.dueBefore && action.dueDate > filter.dueBefore) return false;
     return true;
   });
@@ -125,7 +135,11 @@ export function loadState(): AppState {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return freshInitialState();
     const parsed = JSON.parse(saved) as AppState;
-    if (!Array.isArray(parsed.actions) || !Array.isArray(parsed.audit)) {
+    if (
+      !Array.isArray(parsed.actions) ||
+      !Array.isArray(parsed.audit) ||
+      parsed.actions.some((action) => !action.area || !action.actionType)
+    ) {
       return freshInitialState();
     }
     return parsed;

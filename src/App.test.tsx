@@ -44,4 +44,29 @@ describe("manual portal", () => {
     expect(screen.getByLabelText(/Emergency contact number/)).toHaveValue("");
     expect(screen.getByText(/No activity yet/)).toBeInTheDocument();
   });
+
+  it("reviews a pasted note, filters home actions and approves a simulated follow-up", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("tab", { name: "Home" }));
+    await user.click(screen.getByRole("button", { name: /Follow up on kitchen repair quote/ }));
+    await user.type(screen.getByLabelText(/Follow-up note/), "Ask for the revised repair timeline.");
+    expect(screen.getByRole("button", { name: "Approve in demo" })).toBeEnabled();
+    await user.click(screen.getByRole("button", { name: "Approve in demo" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Approved in this fictional demo");
+    expect(screen.getByRole("button", { name: "Approved in demo" })).toBeDisabled();
+
+    await user.type(screen.getByLabelText(/Paste a notice/), "Remember Ava's museum permission before Friday.");
+    await user.click(screen.getByRole("button", { name: "Review this note" }));
+    expect(screen.getByText("Review before action")).toBeInTheDocument();
+    expect(screen.getAllByText(/Suggested next step/).length).toBeGreaterThan(0);
+  });
+
+  it("provides a visible voice fallback when browser speech recognition is unavailable", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("button", { name: "Use voice" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Voice capture is not available");
+  });
 });

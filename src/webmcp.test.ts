@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { freshInitialState } from "./data";
-import { registerSchoolActionTools } from "./webmcp";
+import { registerPAActionTools, registerSchoolActionTools } from "./webmcp";
 
 describe("WebMCP tools", () => {
   it("supports Chrome executeTool calls that omit callback options", async () => {
@@ -134,5 +134,36 @@ describe("WebMCP tools", () => {
     await expect(tools[0].execute({}, { signal: cancelled.signal })).rejects.toMatchObject({
       name: "AbortError",
     });
+  });
+
+  it("adds a unified PA tool set without removing the legacy school tools", async () => {
+    const tools: WebMCPTool[] = [];
+    const context: WebMCPModelContext = {
+      registerTool: async (tool) => { tools.push(tool); },
+    };
+    const prepareAction = vi.fn();
+    const controller = new AbortController();
+    await registerPAActionTools(
+      context,
+      { getState: freshInitialState, prepareAction, selectAction: vi.fn() },
+      controller.signal,
+    );
+
+    expect(tools.map((tool) => tool.name)).toEqual([
+      "list_school_actions",
+      "get_school_action_details",
+      "prepare_school_action",
+      "list_pa_actions",
+      "get_pa_action_details",
+      "prepare_pa_action",
+    ]);
+    const listResult = await tools[3].execute({}, { signal: controller.signal }) as { count: number };
+    expect(listResult.count).toBe(5);
+    const prepareResult = await tools[5].execute(
+      { actionId: "household-calendar-check", proposedDate: "2026-09-01" },
+      { signal: controller.signal },
+    ) as { submitted: boolean; externalWrite: boolean; status: string };
+    expect(prepareAction).toHaveBeenCalledOnce();
+    expect(prepareResult).toMatchObject({ submitted: false, externalWrite: false, status: "prepared_for_parent_approval" });
   });
 });

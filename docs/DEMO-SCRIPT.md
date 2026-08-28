@@ -1,58 +1,59 @@
 # Demo script (target: 110–130 seconds)
 
+Use this script for the expanded build after it has been deployed and the six-tool native Chrome acceptance run has passed. All people, notices and actions remain fictional.
+
 ## 0–15 seconds — problem and boundary
 
-“School admin arrives as scattered notices and deadlines. PA in Your Pocket: School Actions is an experimental WebMCP prototype that turns those notices into clear actions. Every child, notice and submission you see is fictional.”
+“School notices, calendar commitments and household loose ends all compete for attention. PA in Your Pocket turns them into one calm next-action queue. Everything in this demonstration is fictional, and no external system is connected.”
 
-Show the title, the three boundary labels and the action list.
+Show the title, the fictional-data labels and the School, Calendar and Home tabs.
 
-## 15–35 seconds — human-first portal
+## 15–35 seconds — capture without sorting
 
-“It works as a normal responsive portal, without an agent. A parent can see what is due, open the original notice, review the requirements and complete the visible form.”
+Paste a short note such as:
 
-Open Ava's museum trip and point to the requirements and form.
+> Remember Ava's museum permission and follow up on the kitchen repair before Friday.
 
-## 35–65 seconds — actual WebMCP discovery
+Click **Review this note**.
 
-Open the WebMCP-capable agent or inspector and ask:
+“The assistant reviews the capture locally first. It shows the source, likely deadline, confidence and suggested next step before changing an action.”
 
-> What must I do for both children before Friday?
+Show the capture review and open the suggested action.
 
-“The page exposes a read-only list tool, so the agent returns exactly the two actions due by Friday—one for Ava and one for Noah.”
+## 35–60 seconds — one household queue
 
-Briefly show the tool call and structured result.
+“The same interface brings together school responses, a family calendar check-in and a household repair follow-up. I can filter by area, see what is due, and open the source and requirements.”
 
-## 65–95 seconds — prepare, never submit
+Show the action cards and switch to **Calendar** or **Home**.
 
-Ask:
+## 60–90 seconds — actual WebMCP preparation
 
-> Prepare a yes response for Ava's museum trip using 082 000 0000, but do not submit it.
+Ask the WebMCP-capable agent:
 
-“The prepare tool opens and fills the same form the parent sees. It records that an agent prepared the draft, but it explicitly returns submitted false.”
+> Prepare the family calendar check-in for Tuesday at 18:00, but do not approve it.
 
-Show the filled form, prepared status and Agent audit entry.
+“The agent can prepare the visible proposal, but the result explicitly says it was not submitted and no external write occurred.”
 
-## 95–115 seconds — human control
+Show **Ready for approval**, the prepared proposal and the **Approval centre**.
 
-Edit the note manually, then press **Review complete — submit**.
+## 90–112 seconds — human approval
 
-“My manual edit is preserved. Only my visible click changes the status to submitted, and the audit history records that separately as a parent action.”
+Edit the proposal if needed, then press **Approve in demo**.
 
-Show the Parent entry.
+“Only my visible action changes the state to Approved in demo. The audit history records the agent preparation and my approval separately.”
 
-## 115–130 seconds — reset and close
+Show the Parent audit entry and the no-external-system label.
 
-Press **Reset demo**.
+## 112–130 seconds — close
 
-“Reset restores the deterministic fictional starting state. This is a focused demonstration of useful agent assistance with a clear human boundary—not a production school integration.”
+Show the school tab and the original parent-only response boundary, then press **Reset demo**.
 
-End on the title and repository/live URL card added during editing.
+“PA in Your Pocket helps turn scattered household admin into a next step while keeping the commitment visible and human-controlled. This is a competition prototype, not a live school, calendar or home-service integration.”
 
 ## Recording checks
 
-- Capture the deployed URL, not localhost.
-- Show the actual tool name/result at least once.
-- Keep browser zoom large enough to read.
+- Capture the verified expanded URL, not localhost.
+- Show both the legacy school tools and the unified PA tool at least once.
+- Keep browser zoom large enough to read the source, confidence and approval state.
 - Record in a quiet room; check the first ten seconds for audible narration.
 - Export at 1080p and confirm the final file is below three minutes before uploading publicly.
-

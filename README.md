@@ -1,19 +1,19 @@
-# PA in Your Pocket: School Actions
+# PA in Your Pocket: Household Actions
 
-An experimental WebMCP competition prototype that shows how a parent-facing assistant can identify school admin tasks and prepare a response while leaving the final submission with the parent.
+An experimental WebMCP competition prototype that turns school, calendar and home administration into one calm next-action queue while leaving the final decision with the parent.
 
-> **Demo only:** Ava, Noah, their school notices, all form responses and every submission are fictional. Nothing is sent to a school, calendar, payment service or PA in Your Pocket production system.
+> **Demo only:** Ava, Noah, household notes, all prepared actions and every approval are fictional. Nothing is sent to a school, calendar, payment service, vendor or PA in Your Pocket production system.
 
 Live demo: [pa-school-actions.web.app](https://pa-school-actions.web.app/)
 
 ## The idea
 
-School messages often scatter deadlines and actions across notices. This prototype turns three fictional notices into a calm action list that works in two ways:
+School messages and household loose ends often scatter deadlines across different places. This prototype turns five fictional actions into one calm action list that works in two ways:
 
 - A parent can use the responsive portal manually.
-- A WebMCP-capable agent can list actions, inspect one and prepare its visible form.
+- A WebMCP-capable agent can list actions, inspect one and prepare its visible form or proposal.
 
-The agent cannot submit. The parent can review and edit the prepared values, then must press the visible final button. The activity history records agent preparation and parent submission as separate events.
+The agent cannot approve or submit. The parent can review and edit the prepared values, then must press the visible final button. The activity history records agent preparation and parent approval as separate events.
 
 ## WebMCP tools
 
@@ -22,6 +22,9 @@ The agent cannot submit. The parent can review and edit the prepared values, the
 | `list_school_actions` | Filters actions by child, status and inclusive due date | Read-only |
 | `get_school_action_details` | Opens an action and returns its requirements and fictional notice | Read-only; notice is marked untrusted |
 | `prepare_school_action` | Opens and fills the visible response form | Changes only local draft state; never submits |
+| `list_pa_actions` | Filters the unified school, calendar and home queue | Read-only |
+| `get_pa_action_details` | Opens a unified action and returns source, confidence and next step | Read-only; source is marked untrusted |
+| `prepare_pa_action` | Prepares a calendar or household proposal | Changes only local draft state; never approves or writes externally |
 
 The implementation uses the current imperative API at `document.modelContext`. It does not depend on `requestUserInteraction()`.
 
@@ -34,7 +37,7 @@ npm install
 npm run dev
 ```
 
-Open the local URL shown by Vite. The portal remains fully usable in browsers without WebMCP; it will display **Manual demo mode**.
+Open the local URL shown by Vite. The portal remains fully usable in browsers without WebMCP; it will display **Manual demo mode**. Paste a notice or brain-dump, add a photo for local preview, or use browser voice capture where supported; the review step stays local.
 
 For local WebMCP testing, enable `chrome://flags/#enable-webmcp-testing`, relaunch Chrome, open the app and use the Model Context Tool Inspector extension to inspect and call the registered tools.
 
@@ -71,7 +74,7 @@ The current demo is hosted as the dedicated `pa-school-actions` site in the exis
 
 ## Status
 
-This is a standalone competition experiment, not a released PA in Your Pocket feature. Local, repository, deployed and submitted states are tracked separately in the release checklist.
+This is a standalone competition experiment, not a released PA in Your Pocket feature. The expanded household version is implemented locally but is not deployed yet. Local, repository, deployed and submitted states are tracked separately in the release checklist.
 
 ## Licence
 

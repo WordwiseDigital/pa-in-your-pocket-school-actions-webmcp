@@ -19,6 +19,10 @@ This is the durable project status page for the standalone WebMCP competition pr
 | Competition submission | Not submitted |
 | Video | Script exists; recording and public upload remain outstanding |
 
+## Local expansion candidate
+
+The local `0.2.0` candidate expands the public prototype into one fictional household queue covering School, Calendar and Home. It adds paste/photo/voice capture review, confidence and next-step facts, simulated calendar/home approvals, an approval centre, and three unified PA WebMCP tools. It has not been deployed or browser-accepted yet; the live URL above remains the previously verified three-school-tool deployment.
+
 ## Verified live acceptance
 
 - The page reports **Agent tools ready**.
@@ -30,14 +34,22 @@ This is the durable project status page for the standalone WebMCP competition pr
 - Reset restored three pending actions and an empty audit.
 - Five natural-language prompt scenarios passed live; detailed results are in [LIVE-PROMPT-EVIDENCE-2026-08-28.md](LIVE-PROMPT-EVIDENCE-2026-08-28.md).
 
+## Local candidate checks
+
+- `npm test`: 20 tests passed locally.
+- `npm run build`: production build passed locally.
+- Native Chrome discovery for the six-tool expanded build is pending deployment.
+
 ## Safety boundary
 
 All children, notices, contact details and submissions are fictional. The app has no school, calendar, payment or production PA integration. The WebMCP preparation tool changes only local demo state and never submits.
 
 ## Resume tomorrow
 
-1. Record and publicly upload the 90–150 second narrated demo from the live URL.
-2. Replace the remaining Devpost video placeholder with the verified public link, then complete the submission yourself.
+1. Deploy the local household expansion only after the expanded browser acceptance run is ready.
+2. Repeat native Chrome discovery and prompt evaluation for all six tools.
+3. Record and publicly upload the 90–150 second narrated demo from the verified expanded URL.
+4. Replace the remaining Devpost video placeholder with the verified public link, then complete the submission yourself.
 
 Do not call the project submitted until Devpost confirms it. Do not call the video public until its YouTube page is readable without account access.
 

@@ -25,11 +25,25 @@ Draft-changing but non-submitting. Requires:
 
 It may also receive `emergencyContact` and `note`. It selects the action, fills the visible form and records an `Agent` audit event. Its structured result always reports `submitted: false` and tells the agent that the parent must review and submit manually.
 
+## Unified PA tools
+
+### `list_pa_actions`
+
+Read-only. Lists the unified fictional queue. Optional filters are `area` (`school`, `calendar`, `home` or `all`), `child` (`Ava`, `Noah`, `Household` or `all`), `status` (`pending`, `prepared`, `approved`, `submitted` or `all`) and inclusive `dueBefore`.
+
+### `get_pa_action_details`
+
+Read-only. Returns an action's area, owner, source label and text, confidence, requirements and suggested next step. Source text is marked untrusted and cannot redefine the tool contract.
+
+### `prepare_pa_action`
+
+Draft-changing but non-approving. Prepares a fictional calendar event or household follow-up in the visible interface. It returns `submitted: false` and `externalWrite: false`. School responses must use the legacy `prepare_school_action` contract.
+
 ## Enforced boundaries
 
 - No tool talks to a remote service.
 - No tool has access to real children, schools or contacts.
-- The prepare tool does not call the submit transition.
+- Neither prepare tool calls an approval or submit transition.
 - Submitted actions reject further preparation.
 - Unknown IDs, empty required values and incompatible response types are rejected.
 - Each execution checks its cancellation signal before changing state.
@@ -39,5 +53,4 @@ It may also receive `emergencyContact` and `note`. It selects the action, fills 
 
 ## Human confirmation
 
-The final visible button is not exposed as a WebMCP tool. The parent may edit any prepared value and must press **Review complete — submit**. Only that event changes the action to `submitted` and records the `Parent` audit entry.
-
+The final visible button is not exposed as a WebMCP tool. The parent may edit any prepared value and must press **Review complete — submit** for school responses or **Approve in demo** for calendar/home proposals. Only that event changes the action to `submitted` or `approved` and records the `Parent` audit entry.
