@@ -1,6 +1,6 @@
 # PA in Your Pocket: School Actions — project wiki
 
-Last updated: 27 August 2026
+Last updated: 28 August 2026
 
 ## Purpose
 
@@ -11,11 +11,11 @@ This is the durable project status page for the standalone WebMCP competition pr
 | State | Current evidence |
 | --- | --- |
 | Canonical source | `C:\Users\annab\OneDrive\Documents\Annabel AI Workspace\pa-in-your-pocket-school-actions-webmcp` |
-| Local Git | Clean `main` at commit `691ebcd` |
+| Local Git | Clean `main`, tracking `origin/main` |
 | Firebase | Existing project `pa-in-your-pocket-app`, dedicated Hosting site `pa-school-actions` |
 | Live demo | https://pa-school-actions.web.app/ |
 | Native WebMCP | Verified in Chrome 151 with WebMCP flags on the live URL |
-| Public GitHub repository | Not created or pushed |
+| Public GitHub repository | https://github.com/WordwiseDigital/pa-in-your-pocket-school-actions-webmcp — public `main`, README and MIT licence verified |
 | Competition submission | Not submitted |
 | Video | Script exists; recording and public upload remain outstanding |
 
@@ -35,11 +35,9 @@ All children, notices, contact details and submissions are fictional. The app ha
 
 ## Resume tomorrow
 
-1. Reauthenticate GitHub and create/push the public MIT repository under `WordwiseDigital`.
-2. Read the public repository back and verify its README and licence.
-3. Run the documented natural-language prompt evaluations in a live WebMCP-capable agent; record results for the five-or-more-prompt checklist item.
-4. Record and publicly upload the 90–150 second narrated demo from the live URL.
-5. Replace the Devpost draft placeholders with verified live, repository and video links, then complete the submission yourself.
+1. Run the documented natural-language prompt evaluations in a live WebMCP-capable agent; record results for the five-or-more-prompt checklist item.
+2. Record and publicly upload the 90–150 second narrated demo from the live URL.
+3. Replace the remaining Devpost video placeholder with the verified public link, then complete the submission yourself.
 
 Do not call the project submitted until Devpost confirms it. Do not call the video public until its YouTube page is readable without account access.
 

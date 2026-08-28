@@ -40,11 +40,10 @@ This competition build remains a standalone experiment. Any production explorati
 
 ## Required links
 
-- Live demo: `ADD AFTER VERIFIED DEPLOYMENT`
-- Public source repository: `ADD AFTER VERIFIED PUSH`
+- Live demo: https://pa-school-actions.web.app/
+- Public source repository: https://github.com/WordwiseDigital/pa-in-your-pocket-school-actions-webmcp
 - Public YouTube video: `ADD AFTER VERIFIED UPLOAD`
 
 ## Disclosure
 
 All names, school notices, contact details and submissions shown in the project are simulated. The app has no school, calendar, payment or PA in Your Pocket production integration.
-

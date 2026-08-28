@@ -13,11 +13,11 @@ This file deliberately separates build, publication and submission evidence.
 
 ## Public repository
 
-- [ ] Git repository initialised on `main`
-- [ ] MIT licence detected
+- [x] Git repository initialised on `main`
+- [x] MIT licence detected
 - [x] No secrets, real personal information or private PA/client code found in the bounded source scan
-- [ ] Repository created under `WordwiseDigital`
-- [ ] Commit pushed and public repository read back
+- [x] Repository created under `WordwiseDigital`
+- [x] Commit pushed and public repository read back
 
 ## Firebase deployment
 
