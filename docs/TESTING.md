@@ -8,7 +8,7 @@ Run:
 npm run check
 ```
 
-The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, unmatched-capture confirmation, chosen-area capture creation, Notes capture without a deadline, voice buffering and fallback, household removal with audit retention, invalid/repeated calls, deterministic reset and cancellation. The current suite is 25 tests.
+The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, unmatched-capture confirmation, chosen-area capture creation, Notes capture without a deadline, voice buffering and fallback, household removal with audit retention, completed-item removal from the active queue, invalid/repeated calls, deterministic reset and cancellation. The current suite is 26 tests.
 
 ## Natural-language prompt evals
 
@@ -41,7 +41,7 @@ Run each prompt in a WebMCP-enabled Chrome session against the deployed URL. Res
 4. Run prompt 1 and compare the two IDs and dates with the interface.
 5. Run prompt 3. Confirm the form is visible and prepared, but the status is not submitted.
 6. Manually change the optional note. Move to another action and back; confirm the edit remains.
-7. Press the visible school submit button. Confirm the status changes only now and audit history shows both `Agent` and `Parent` entries.
+7. Press the visible school submit button. Confirm the status changes only now, the item leaves **Next actions**, and audit history shows both `Agent` and `Parent` entries.
 8. Cancel a tool call in the inspector. Confirm it returns/records cancellation without a state change.
 9. Reset again and confirm the original seed returns.
 10. Inspect the live response headers for `Origin-Agent-Cluster: ?1` and a `Permissions-Policy` allowing `tools` for self.

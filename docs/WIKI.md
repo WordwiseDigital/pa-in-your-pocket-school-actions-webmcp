@@ -21,7 +21,7 @@ This is the durable project status page for the standalone WebMCP competition pr
 
 ## Local expansion candidate
 
-The `0.2.0` expansion is deployed and browser-accepted on the dedicated live URL. It expands the public prototype into one fictional household queue covering School, Calendar, Home and Notes. It adds paste/photo/voice capture review, confidence and next-step facts, a no-deadline Notes area, simulated calendar/home approvals, an approval centre, and three unified PA WebMCP tools. Follow-up revisions ensure unmatched captures are not assigned to an unrelated action: the parent chooses the area and deadline when needed, then adds a distinct local action. A Home or Notes item can be kept or removed while retaining the audit decision. Detailed base acceptance evidence is in [LIVE-PROMPT-EVIDENCE-2026-08-28.md](LIVE-PROMPT-EVIDENCE-2026-08-28.md).
+The `0.2.0` expansion is deployed and browser-accepted on the dedicated live URL. It expands the public prototype into one fictional household queue covering School, Calendar, Home and Notes. It adds paste/photo/voice capture review, confidence and next-step facts, a no-deadline Notes area, simulated calendar/home approvals, an approval centre, and three unified PA WebMCP tools. Follow-up revisions ensure unmatched captures are not assigned to an unrelated action: the parent chooses the area and deadline when needed, then adds a distinct local action. A Home or Notes item can be kept or removed while retaining the audit decision. Completed approved or submitted items now leave the active **Next actions** queue while remaining in audit history. Detailed base acceptance evidence is in [LIVE-PROMPT-EVIDENCE-2026-08-28.md](LIVE-PROMPT-EVIDENCE-2026-08-28.md).
 
 ## Verified live acceptance
 
@@ -38,7 +38,7 @@ The `0.2.0` expansion is deployed and browser-accepted on the dedicated live URL
 
 ## Local candidate checks
 
-- `npm test`: 24 tests passed locally.
+- `npm test`: 26 tests passed locally.
 - `npm run build`: production build passed locally.
 - The latest capture and voice revision is pushed to the public `main` branch and deployed to the dedicated Hosting site.
 - Native Chrome discovery and prepare-only acceptance passed for the six-tool expanded build.

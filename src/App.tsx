@@ -98,10 +98,10 @@ export default function App() {
   const voiceSessionActiveRef = useRef(false);
 
   const visibleActions = useMemo(
-    () => state.actions.filter((action) => action.status !== "dismissed" && (activeArea === "all" || action.area === activeArea)),
+    () => state.actions.filter((action) => (action.status === "pending" || action.status === "prepared") && (activeArea === "all" || action.area === activeArea)),
     [activeArea, state.actions],
   );
-  const selected = state.actions.find((action) => action.id === selectedId && action.status !== "dismissed") ?? visibleActions[0] ?? (activeArea === "all" ? state.actions.find((action) => action.status !== "dismissed") : undefined);
+  const selected = visibleActions.find((action) => action.id === selectedId) ?? visibleActions[0];
   const dueThisWeek = state.actions.filter((action) => action.dueDate && action.dueDate <= DEMO_WEEK_END && action.status === "pending");
   const prepared = state.actions.filter((action) => action.status === "prepared");
   const approvedCount = state.actions.filter((action) => action.status === "approved" || action.status === "submitted").length;
@@ -120,6 +120,8 @@ export default function App() {
       {
         getState: () => stateRef.current,
         selectAction: (actionId) => {
+          const action = stateRef.current.actions.find((item) => item.id === actionId && item.status !== "dismissed");
+          if (action) setActiveArea(action.area);
           setSelectedId(actionId);
           requestAnimationFrame(() => document.getElementById("action-workspace")?.scrollIntoView({ behavior: "smooth", block: "start" }));
         },
@@ -171,6 +173,8 @@ export default function App() {
   }
 
   function openAction(actionId: string) {
+    const action = state.actions.find((item) => item.id === actionId && item.status !== "dismissed");
+    if (action) setActiveArea(action.area);
     setSelectedId(actionId);
     scrollToActions();
   }

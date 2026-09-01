@@ -5,7 +5,7 @@ This file deliberately separates build, publication and submission evidence.
 ## Local build
 
 - [x] Dependencies installed with a lockfile
-- [x] Automated tests pass (25 tests on 1 September 2026)
+- [x] Automated tests pass (26 tests on 1 September 2026)
 - [x] Production build passes
 - [x] Manual portal works without WebMCP at desktop and 390px mobile widths
 - [x] Six WebMCP tools pass automated contract coverage and live native Chrome acceptance

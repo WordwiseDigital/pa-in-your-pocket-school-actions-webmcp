@@ -28,6 +28,7 @@ describe("manual portal", () => {
       screen.getByText("The parent reviewed the response and used the visible submit button."),
     ).toBeInTheDocument();
     expect(screen.getByText("Parent")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Museum trip permission/ })).not.toBeInTheDocument();
   });
 
   it("reset restores the deterministic starting state", async () => {
@@ -55,14 +56,15 @@ describe("manual portal", () => {
     expect(screen.getByRole("button", { name: "Approve in demo" })).toBeEnabled();
     await user.click(screen.getByRole("button", { name: "Approve in demo" }));
     expect(screen.getByRole("status")).toHaveTextContent("Approved in this fictional demo");
-    expect(screen.getByRole("button", { name: "Approved in demo" })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: /Follow up on kitchen repair quote/ })).not.toBeInTheDocument();
+    expect(screen.getByText("The parent approved this simulated demo action. No external calendar, reminder or vendor system was changed.")).toBeInTheDocument();
 
     await user.type(screen.getByLabelText(/Paste a notice/), "Remember Ava's museum permission before Friday.");
     await user.click(screen.getByRole("button", { name: "Review this note" }));
     expect(screen.getByText("Review before action")).toBeInTheDocument();
     expect(screen.getAllByText(/Suggested next step/).length).toBeGreaterThan(0);
     await user.click(screen.getByRole("button", { name: /Open suggested action/ }));
-    expect(screen.getByRole("heading", { name: "Museum trip permission" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Museum trip permission" })).toBeInTheDocument();
   });
 
   it("provides a visible voice fallback when browser speech recognition is unavailable", async () => {
@@ -91,6 +93,25 @@ describe("manual portal", () => {
     await user.click(screen.getByRole("button", { name: "Add new Home action" }));
     expect(screen.getByRole("button", { name: /Open suggested action/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "Call the plumber about the shower" })).toBeInTheDocument();
+  });
+
+  it("removes a newly captured plumber action from the Home list", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByLabelText(/Paste a notice/), "Call the plumber about the bathroom shower.");
+    await user.click(screen.getByRole("button", { name: "Review this note" }));
+    await user.click(screen.getByRole("radio", { name: "Home admin" }));
+    fireEvent.change(screen.getByLabelText("Deadline Required"), { target: { value: "2026-09-04" } });
+    await user.click(screen.getByRole("button", { name: "Add new Home action" }));
+
+    expect(screen.getByRole("heading", { level: 2, name: "Call the plumber about the bathroom shower" })).toBeInTheDocument();
+    await user.click(screen.getByRole("radio", { name: "No, remove from my list" }));
+    await user.click(screen.getByRole("button", { name: "Remove from my list" }));
+
+    expect(screen.getByRole("status")).toHaveTextContent("Removed from this fictional list");
+    expect(screen.queryByRole("button", { name: /Call the plumber about the bathroom shower/ })).not.toBeInTheDocument();
+    expect(screen.getByText("The parent removed this item from the visible household list.")).toBeInTheDocument();
   });
 
   it("lets a parent remove a Home action without deleting its audit history", async () => {
