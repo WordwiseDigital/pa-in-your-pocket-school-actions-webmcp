@@ -29,7 +29,7 @@ It may also receive `emergencyContact` and `note`. It selects the action, fills 
 
 ### `list_pa_actions`
 
-Read-only. Lists the unified fictional queue. Optional filters are `area` (`school`, `calendar`, `home` or `all`), `child` (`Ava`, `Noah`, `Household` or `all`), `status` (`pending`, `prepared`, `approved`, `submitted` or `all`) and inclusive `dueBefore`.
+Read-only. Lists the unified fictional queue. Optional filters are `area` (`school`, `calendar`, `home` or `all`), `child` (`Ava`, `Noah`, `Household` or `all`), `status` (`pending`, `prepared`, `approved`, `submitted`, `dismissed` or `all`) and inclusive `dueBefore`. Removed items are hidden when no status filter is supplied.
 
 ### `get_pa_action_details`
 
@@ -44,7 +44,7 @@ Draft-changing but non-approving. Prepares a fictional calendar event or househo
 - No tool talks to a remote service.
 - No tool has access to real children, schools or contacts.
 - Neither prepare tool calls an approval or submit transition.
-- Submitted actions reject further preparation.
+- Submitted and dismissed actions reject further preparation.
 - Unknown IDs, empty required values and incompatible response types are rejected.
 - Each execution checks its cancellation signal before changing state.
 - All schemas reject additional properties.
@@ -53,4 +53,4 @@ Draft-changing but non-approving. Prepares a fictional calendar event or househo
 
 ## Human confirmation
 
-The final visible button is not exposed as a WebMCP tool. The parent may edit any prepared value and must press **Review complete — submit** for school responses or **Approve in demo** for calendar/home proposals. Only that event changes the action to `submitted` or `approved` and records the `Parent` audit entry.
+The final visible button is not exposed as a WebMCP tool. The parent may edit any prepared value and must press **Review complete — submit** for school responses or **Approve in demo** for calendar/home proposals. For a Home item, the parent can choose **No, remove from my list** and press the visible removal button. Only that event changes the action to `submitted`, `approved` or `dismissed` and records the `Parent` audit entry.

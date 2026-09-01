@@ -30,6 +30,8 @@ pending --agent prepares--> prepared --parent approves--> approved
    |                           |
    +------parent edits--------+
 
+pending --parent removes Home item--> dismissed
+
 school prepared --parent submits--> submitted
 
 reset -----------------------------------------------> pending
@@ -37,7 +39,7 @@ reset -----------------------------------------------> pending
 
 - Agent preparation updates a draft and adds an `Agent` audit event without any external write.
 - Manual editing updates the draft without erasing the preparation event.
-- Only the portal's visible final handler can set `approved` or `submitted` and add a `Parent` audit event.
+- Only the portal's visible final handler can set `approved`, `submitted` or `dismissed` and add a `Parent` audit event. Dismissal removes a Home item from the active queue but retains its fictional audit history.
 - Reset replaces all state with a fresh clone of the deterministic seed.
 
 ## Persistence
