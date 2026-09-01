@@ -61,6 +61,8 @@ describe("manual portal", () => {
     await user.click(screen.getByRole("button", { name: "Review this note" }));
     expect(screen.getByText("Review before action")).toBeInTheDocument();
     expect(screen.getAllByText(/Suggested next step/).length).toBeGreaterThan(0);
+    await user.click(screen.getByRole("button", { name: /Open suggested action/ }));
+    expect(screen.getByRole("heading", { name: "Museum trip permission" })).toBeInTheDocument();
   });
 
   it("provides a visible voice fallback when browser speech recognition is unavailable", async () => {

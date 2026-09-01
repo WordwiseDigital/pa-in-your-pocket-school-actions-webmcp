@@ -160,6 +160,14 @@ export default function App() {
     setToast("Capture reviewed locally. Check the suggested action before preparing anything.");
   }
 
+  function openAction(actionId: string) {
+    setSelectedId(actionId);
+    requestAnimationFrame(() => {
+      const workspace = document.getElementById("action-workspace");
+      if (typeof workspace?.scrollIntoView === "function") workspace.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
   function handlePhoto(file: File | undefined) {
     if (!file) return;
     const previewUrl = typeof URL.createObjectURL === "function" ? URL.createObjectURL(file) : undefined;
@@ -252,7 +260,7 @@ export default function App() {
               <p>{capture.text}</p>
               <div className="review-facts"><span>Area <b>{areaLabels[capture.area]}</b></span><span>Deadline <b>{capture.deadline === "Needs confirmation" ? capture.deadline : formatDate(capture.deadline)}</b></span><span>Confidence <b>{capture.confidence}</b></span></div>
               <div className="next-step"><span>Suggested next step</span><strong>{capture.nextStep}</strong></div>
-              <button className="text-button" type="button" onClick={() => setSelectedId(capture.actionIds[0] ?? selectedId)}>Open suggested action →</button>
+              <button className="text-button" type="button" onClick={() => openAction(capture.actionIds[0] ?? selectedId)}>Open suggested action →</button>
             </div> : <div className="capture-empty"><span aria-hidden="true">◎</span><p>Paste, photograph or say something. PA will show what it thinks belongs together before you prepare an action.</p></div>}
           </div>
         </section>
