@@ -166,4 +166,24 @@ describe("WebMCP tools", () => {
     expect(prepareAction).toHaveBeenCalledOnce();
     expect(prepareResult).toMatchObject({ submitted: false, externalWrite: false, status: "prepared_for_parent_approval" });
   });
+
+  it("keeps completed actions out of the default unified queue while allowing explicit history", async () => {
+    const tools: WebMCPTool[] = [];
+    const completedState = freshInitialState();
+    completedState.actions[0].status = "submitted";
+    const context: WebMCPModelContext = {
+      registerTool: async (tool) => { tools.push(tool); },
+    };
+    const controller = new AbortController();
+    await registerPAActionTools(
+      context,
+      { getState: () => completedState, prepareAction: vi.fn(), selectAction: vi.fn() },
+      controller.signal,
+    );
+
+    const active = await tools[3].execute({}, { signal: controller.signal }) as { count: number };
+    const history = await tools[3].execute({ status: "submitted" }, { signal: controller.signal }) as { count: number };
+    expect(active.count).toBe(4);
+    expect(history.count).toBe(1);
+  });
 });

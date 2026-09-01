@@ -38,7 +38,7 @@ The `0.2.0` expansion is deployed and browser-accepted on the dedicated live URL
 
 ## Local candidate checks
 
-- `npm test`: 26 tests passed locally.
+- `npm test`: 27 tests passed locally.
 - `npm run build`: production build passed locally.
 - The latest capture and voice revision is pushed to the public `main` branch and deployed to the dedicated Hosting site.
 - Native Chrome discovery and prepare-only acceptance passed for the six-tool expanded build.

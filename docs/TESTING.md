@@ -8,7 +8,7 @@ Run:
 npm run check
 ```
 
-The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, unmatched-capture confirmation, chosen-area capture creation, Notes capture without a deadline, voice buffering and fallback, household removal with audit retention, completed-item removal from the active queue, invalid/repeated calls, deterministic reset and cancellation. The current suite is 26 tests.
+The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, unmatched-capture confirmation, chosen-area capture creation, Notes capture without a deadline, voice buffering and fallback, household removal with audit retention, completed-item removal from the active queue, invalid/repeated calls, deterministic reset and cancellation. The current suite is 27 tests.
 
 ## Natural-language prompt evals
 
