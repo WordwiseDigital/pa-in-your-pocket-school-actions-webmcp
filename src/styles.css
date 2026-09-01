@@ -185,6 +185,7 @@ footer p + p::before { content: " · "; }
   .workspace-layout { margin-top: 30px; }
   .actions-panel, .detail-panel, .audit-section { padding: 21px; border-radius: 20px; }
   .choice-grid { grid-template-columns: 1fr; }
+  .capture-area-choice { grid-template-columns: 1fr; }
   .detail-header, .submit-boundary { align-items: stretch; flex-direction: column; }
   .detail-header .status-pill { align-self: start; margin-left: 0; }
   .primary-button { width: 100%; }
@@ -200,6 +201,7 @@ footer p + p::before { content: " · "; }
 .capture-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); gap: 22px; align-items: stretch; }
 .capture-panel textarea { width: 100%; padding: 14px; border: 1px solid #cbd8d4; border-radius: 12px; color: var(--ink); background: white; resize: vertical; font: inherit; }
 .capture-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 13px; }
+.capture-listening-note { display: block; margin-top: 9px; color: var(--teal); font-size: .72rem; font-weight: 700; }
 .secondary-button { display: inline-flex; align-items: center; justify-content: center; min-height: 43px; padding: 11px 14px; border: 1px solid #b9ceca; border-radius: 12px; color: var(--teal); background: white; font-size: .76rem; font-weight: 800; cursor: pointer; }
 .secondary-button:hover, .secondary-button.is-listening { border-color: var(--teal); background: var(--teal-soft); }
 .file-button input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -218,6 +220,10 @@ footer p + p::before { content: " · "; }
 .capture-resolution strong, .capture-resolution > span { display: block; }
 .capture-resolution strong { font-size: .8rem; }
 .capture-resolution > span { margin-top: 4px; color: var(--muted); font-size: .72rem; line-height: 1.35; }
+.capture-area-choice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 13px 0 0; padding: 0; border: 0; }
+.capture-area-choice legend { grid-column: 1 / -1; margin-bottom: 0; color: var(--ink); font-size: .72rem; font-weight: 800; }
+.capture-area-choice legend span { color: var(--muted); font-size: .65rem; font-weight: 600; }
+.capture-area-choice .choice-card { min-height: 42px; padding: 9px; font-size: .7rem; }
 .capture-resolution .field-label { margin-top: 12px; }
 .capture-resolution .secondary-button { margin-top: 2px; }
 .capture-empty, .approval-empty { display: grid; place-items: center; align-content: center; min-height: 175px; padding: 20px; border: 1px dashed #bfccc8; border-radius: 17px; color: var(--muted); text-align: center; }

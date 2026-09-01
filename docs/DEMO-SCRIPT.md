@@ -20,11 +20,11 @@ Click **Review this note**.
 
 Show the capture review and open the suggested action.
 
-For a genuinely new household instruction, use:
+For a genuinely new instruction, use:
 
 > Call the plumber about the bathroom shower.
 
-This should show **Needs confirmation** rather than reuse the kitchen repair. Choose a fictional deadline and click **Add new Home action** to show the new bathroom task entering the queue as its own item.
+This should show **Needs confirmation** rather than reuse the kitchen repair. Choose **Home admin**, choose a fictional deadline and click **Add new Home action** to show the new bathroom task entering the queue as its own item. For “Call to make a hotel reservation”, choose **Calendar / reminder** to demonstrate that a new capture is not forced into Home.
 
 ## 35–60 seconds — one household queue
 

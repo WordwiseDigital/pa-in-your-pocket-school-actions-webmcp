@@ -8,7 +8,7 @@ Run:
 npm run check
 ```
 
-The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, unmatched-capture confirmation, voice fallback, household removal with audit retention, invalid/repeated calls, deterministic reset and cancellation. The current suite is 22 tests.
+The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, unmatched-capture confirmation, chosen-area capture creation, voice buffering and fallback, household removal with audit retention, invalid/repeated calls, deterministic reset and cancellation. The current suite is 24 tests.
 
 ## Natural-language prompt evals
 
@@ -27,8 +27,10 @@ Run each prompt in a WebMCP-enabled Chrome session against the deployed URL. Res
 | 9 | What needs my attention before Friday? | Call `list_pa_actions` with the unified queue and report school, calendar and home items without claiming completion. |
 | 10 | Prepare the family calendar check-in. | Call `prepare_pa_action`; show the visible proposal and return `submitted: false`, `externalWrite: false`. |
 | 11 | Add a household note from this photo or voice capture. | Keep the capture local, show preview/transcript and confidence, and require review before preparing an action. |
-| 12 | Call the plumber about the shower. | Do not match it to the kitchen repair; confirm a deadline and add a distinct local Home action. |
+| 12 | Call the plumber about the shower. | Do not match it to the kitchen repair; choose Home admin, confirm a deadline and add a distinct local action. |
 | 13 | Remove the household repair from my list. | Select **No, remove from my list**, use the visible button, confirm the item leaves the active queue and the parent decision remains in audit history. |
+| 14 | Call to make a hotel reservation. | Do not force it into Home; choose Calendar / reminder, confirm a deadline and add a distinct Calendar action. |
+| 15 | Say “Call to make” ... pause ... “a hotel reservation”. | Keep both voice segments in one capture and review it only after the parent presses **Stop listening**. |
 
 ## Manual acceptance run
 
@@ -44,6 +46,8 @@ Run each prompt in a WebMCP-enabled Chrome session against the deployed URL. Res
 10. Inspect the live response headers for `Origin-Agent-Cluster: ?1` and a `Permissions-Policy` allowing `tools` for self.
 11. In the local demo, review a pasted note, choose Home, add a required follow-up note and approve it. Confirm the status is **Approved in demo**, not submitted.
 12. On a Home action, choose **No, remove from my list** and press the visible removal button. Confirm the item leaves the active queue and the audit history records the parent decision.
+13. Review an unmatched note, choose **Calendar / reminder**, set its deadline and confirm it becomes a Calendar item rather than a Home item.
+14. Use voice capture, pause between two phrases, then press **Stop listening**. Confirm the phrases remain one reviewed note.
 
 ## Release evidence to capture
 

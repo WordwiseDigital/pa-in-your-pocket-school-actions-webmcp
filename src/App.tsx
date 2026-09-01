@@ -21,8 +21,8 @@ function statusLabel(status: PAAction["status"]): string {
 
 function responseOptions(action: PAAction): { value: ResponseChoice; label: string }[] {
   if (action.kind === "checklist") return [{ value: "acknowledged", label: "I have reviewed the checklist" }];
-  if (action.area === "home") return [
-    { value: "acknowledged", label: "Yes, keep this on my list" },
+  if (action.actionType === "household-task") return [
+    { value: "acknowledged", label: action.area === "calendar" ? "Yes, keep this reminder" : "Yes, keep this on my list" },
     { value: "no", label: "No, remove from my list" },
   ];
   return [
@@ -37,6 +37,7 @@ function selectedCaptureActions(text: string, actions: PAAction[]): PAAction[] {
     return actions.filter((action) => action.area === "school" && action.status === "pending");
   }
   const matches = actions.filter((action) => {
+    if (action.status === "dismissed") return false;
     const terms = `${action.title} ${action.summary} ${action.area} ${action.child}`.toLowerCase();
     return terms.split(/\s+/).some((term) => term.length > 4 && lower.includes(term));
   });
@@ -69,7 +70,8 @@ function createCaptureReview(
 interface SpeechRecognitionLike {
   lang: string;
   interimResults: boolean;
-  onresult: ((event: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
+  continuous?: boolean;
+  onresult: ((event: { results: ArrayLike<ArrayLike<{ transcript: string }>>; resultIndex?: number }) => void) | null;
   onerror: (() => void) | null;
   onend: (() => void) | null;
   start: () => void;
@@ -91,6 +93,8 @@ export default function App() {
   const [isListening, setIsListening] = useState(false);
   const stateRef = useRef(state);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const voiceTextRef = useRef("");
+  const voiceSessionActiveRef = useRef(false);
 
   const visibleActions = useMemo(
     () => state.actions.filter((action) => action.status !== "dismissed" && (activeArea === "all" || action.area === activeArea)),
@@ -190,32 +194,33 @@ export default function App() {
     setCapture((currentCapture) => currentCapture ? { ...currentCapture, ...updates } : currentCapture);
   }
 
-  function createHomeActionFromCapture() {
-    if (!capture || capture.actionIds.length > 0 || capture.area !== "home" || capture.deadline === "Needs confirmation") return;
+  function createActionFromCapture() {
+    if (!capture || capture.actionIds.length > 0 || capture.area === "unknown" || capture.deadline === "Needs confirmation") return;
     const title = capture.text.trim().replace(/[.!?]+$/, "").replace(/^./, (character) => character.toUpperCase());
-    const actionId = `captured-home-${Date.now()}`;
+    const isSchool = capture.area === "school";
+    const actionId = `captured-${capture.area}-${Date.now()}`;
     const newAction: PAAction = {
       id: actionId,
-      area: "home",
-      child: "Household",
+      area: capture.area,
+      child: isSchool ? "Ava" : "Household",
       title: title || "New household task",
       kind: "task",
-      actionType: "household-task",
+      actionType: isSchool ? "school-response" : "household-task",
       dueDate: capture.deadline,
-      summary: "A new household item captured from a parent note.",
+      summary: `A new ${areaLabels[capture.area].toLowerCase()} item captured from a parent note.`,
       noticeText: capture.text,
       sourceLabel: "Parent capture (local)",
-      requirements: ["Confirm the household task", "Add the detail you want remembered"],
-      suggestedNextStep: "Review the captured household task and add any missing detail.",
+      requirements: isSchool ? ["Choose the school response", "Add the detail you want remembered"] : ["Confirm the next step", "Add the detail you want remembered"],
+      suggestedNextStep: `Review the captured ${areaLabels[capture.area].toLowerCase()} item and add any missing detail.`,
       confidence: "medium",
       status: "pending",
-      draft: { response: "acknowledged", emergencyContact: "", note: capture.text, proposedTitle: "", proposedDate: "", proposedTime: "" },
+      draft: { response: isSchool ? "" : "acknowledged", emergencyContact: "", note: capture.text, proposedTitle: "", proposedDate: "", proposedTime: "" },
     };
     dispatch({ type: "add-action", action: newAction });
-    setActiveArea("home");
+    setActiveArea(capture.area);
     setSelectedId(actionId);
-    setCapture({ ...capture, actionIds: [actionId], area: "home", confidence: "medium", nextStep: newAction.suggestedNextStep });
-    setToast("New household action added locally. Review it before approving anything.");
+    setCapture({ ...capture, actionIds: [actionId], confidence: "medium", nextStep: newAction.suggestedNextStep });
+    setToast(`New ${areaLabels[capture.area].toLowerCase()} action added locally. Review it before approving anything.`);
   }
 
   function handlePhoto(file: File | undefined) {
@@ -226,6 +231,7 @@ export default function App() {
 
   function toggleVoice() {
     if (isListening) {
+      voiceSessionActiveRef.current = false;
       recognitionRef.current?.stop();
       setIsListening(false);
       return;
@@ -239,17 +245,44 @@ export default function App() {
     const recognition = new Recognition();
     recognition.lang = "en-ZA";
     recognition.interimResults = false;
+    recognition.continuous = true;
     recognition.onresult = (event) => {
-      const transcript = event.results[0]?.[0]?.transcript ?? "";
-      setCaptureText(transcript);
-      reviewText("voice", "Browser voice capture", transcript);
+      const start = event.resultIndex ?? 0;
+      const transcript = Array.from({ length: Math.max(0, event.results.length - start) }, (_, offset) => event.results[start + offset]?.[0]?.transcript ?? "").join(" ").trim();
+      if (transcript) voiceTextRef.current = `${voiceTextRef.current} ${transcript}`.trim();
     };
     recognition.onerror = () => {
+      voiceSessionActiveRef.current = false;
       setIsListening(false);
-      setToast("Voice capture could not be completed. The text fallback is still available.");
+      const transcript = voiceTextRef.current.trim();
+      if (transcript) {
+        setCaptureText(transcript);
+        reviewText("voice", "Browser voice capture", transcript);
+        voiceTextRef.current = "";
+      } else {
+        setToast("Voice capture could not be completed. The text fallback is still available.");
+      }
     };
-    recognition.onend = () => setIsListening(false);
+    recognition.onend = () => {
+      if (voiceSessionActiveRef.current) {
+        try {
+          recognition.start();
+          return;
+        } catch {
+          voiceSessionActiveRef.current = false;
+        }
+      }
+      setIsListening(false);
+      const transcript = voiceTextRef.current.trim();
+      if (transcript) {
+        setCaptureText(transcript);
+        reviewText("voice", "Browser voice capture", transcript);
+        voiceTextRef.current = "";
+      }
+    };
     recognitionRef.current = recognition;
+    voiceTextRef.current = "";
+    voiceSessionActiveRef.current = true;
     setIsListening(true);
     recognition.start();
   }
@@ -302,6 +335,7 @@ export default function App() {
                 <button className={`secondary-button ${isListening ? "is-listening" : ""}`} type="button" onClick={toggleVoice}>{isListening ? "Stop listening" : "Use voice"}</button>
                 <label className="secondary-button file-button">Add a photo<input type="file" accept="image/*" onChange={(event) => handlePhoto(event.target.files?.[0])} /></label>
               </div>
+              {isListening && <span className="capture-listening-note">You can pause; PA keeps listening until you stop.</span>}
             </div>
             {capture ? <div className="capture-review" aria-label="Capture review">
               <span className="review-kicker">Review before action</span>
@@ -311,7 +345,7 @@ export default function App() {
               <div className="review-facts"><span>Area <b>{areaLabels[capture.area]}</b></span><span>Deadline <b>{capture.deadline === "Needs confirmation" ? capture.deadline : formatDate(capture.deadline)}</b></span><span>Confidence <b>{capture.confidence}</b></span></div>
               <div className="next-step"><span>Suggested next step</span><strong>{capture.nextStep}</strong></div>
               {capture.actionIds.length > 0 ? <button className="text-button" type="button" onClick={() => openAction(capture.actionIds[0])}>Open suggested action →</button> : <>
-                <div className="capture-resolution"><strong>Confirm this as a new Home action</strong><span>This is separate from existing household items. Choose a deadline before adding it to the queue.</span><label className="field-label" htmlFor="capture-home-date">Deadline <span>Required</span><input id="capture-home-date" type="date" value={capture.area === "home" && capture.deadline !== "Needs confirmation" ? capture.deadline : ""} onChange={(event) => updateCaptureResolution({ area: "home", deadline: event.target.value || "Needs confirmation" })} /></label><button className="secondary-button" type="button" onClick={createHomeActionFromCapture} disabled={capture.area !== "home" || capture.deadline === "Needs confirmation"}>Add new Home action</button></div>
+                <div className="capture-resolution"><strong>Confirm this as a new action</strong><span>This is separate from existing items. Choose an area and deadline before adding it to the queue.</span><fieldset className="capture-area-choice"><legend>Area <span>Required</span></legend>{(["home", "calendar", "school"] as ActionArea[]).map((area) => <label key={area} className="choice-card"><input type="radio" name="capture-area" value={area} checked={capture.area === area} onChange={() => updateCaptureResolution({ area, deadline: capture.deadline })} /><span>{area === "calendar" ? "Calendar / reminder" : `${areaLabels[area]} admin`}</span></label>)}</fieldset><label className="field-label" htmlFor="capture-action-date">Deadline <span>Required</span><input id="capture-action-date" type="date" value={capture.deadline !== "Needs confirmation" ? capture.deadline : ""} onChange={(event) => updateCaptureResolution({ deadline: event.target.value || "Needs confirmation" })} /></label><button className="secondary-button" type="button" onClick={createActionFromCapture} disabled={capture.area === "unknown" || capture.deadline === "Needs confirmation"}>{capture.area === "unknown" ? "Choose an area first" : `Add new ${areaLabels[capture.area]} action`}</button></div>
                 <button className="text-button" type="button" onClick={scrollToActions}>Review existing actions below →</button>
               </>}
             </div> : <div className="capture-empty"><span aria-hidden="true">◎</span><p>Paste, photograph or say something. PA will show what it thinks belongs together before you prepare an action.</p></div>}

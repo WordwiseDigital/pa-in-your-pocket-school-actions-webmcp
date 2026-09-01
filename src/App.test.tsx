@@ -82,10 +82,11 @@ describe("manual portal", () => {
     expect(screen.getAllByText("Needs confirmation").length).toBeGreaterThan(0);
     expect(screen.getByText("Choose which household action this capture belongs to.")).toBeInTheDocument();
     expect(screen.getByText("low")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Add new Home action" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Choose an area first" })).toBeDisabled();
 
     await user.click(screen.getByRole("tab", { name: "Home" }));
     expect(screen.getByRole("heading", { level: 2, name: "Follow up on kitchen repair quote" })).toBeInTheDocument();
+    await user.click(screen.getByRole("radio", { name: "Home admin" }));
     fireEvent.change(screen.getByLabelText("Deadline Required"), { target: { value: "2026-09-04" } });
     await user.click(screen.getByRole("button", { name: "Add new Home action" }));
     expect(screen.getByRole("button", { name: /Open suggested action/ })).toBeInTheDocument();
@@ -107,5 +108,48 @@ describe("manual portal", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Removed from this fictional list");
     expect(screen.queryByRole("button", { name: /Follow up on kitchen repair quote/ })).not.toBeInTheDocument();
     expect(screen.getByText("The parent removed this item from the visible household list.")).toBeInTheDocument();
+  });
+
+  it("lets an unmatched note become a Calendar reminder instead of forcing Home", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByLabelText(/Paste a notice/), "Call to make a hotel reservation.");
+    await user.click(screen.getByRole("button", { name: "Review this note" }));
+    expect(screen.getByRole("button", { name: "Choose an area first" })).toBeDisabled();
+
+    await user.click(screen.getByRole("radio", { name: "Calendar / reminder" }));
+    fireEvent.change(screen.getByLabelText("Deadline Required"), { target: { value: "2026-09-06" } });
+    await user.click(screen.getByRole("button", { name: "Add new Calendar action" }));
+
+    expect(screen.getByRole("tab", { name: "Calendar" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("heading", { level: 2, name: "Call to make a hotel reservation" })).toBeInTheDocument();
+    expect(screen.getAllByText("Calendar", { selector: ".area-tag" }).length).toBeGreaterThan(0);
+  });
+
+  it("keeps multiple voice segments together until listening stops", async () => {
+    const user = userEvent.setup();
+    let recognition: FakeRecognition | undefined;
+    class FakeRecognition {
+      onresult: ((event: { results: ArrayLike<ArrayLike<{ transcript: string }>>; resultIndex?: number }) => void) | null = null;
+      onend: (() => void) | null = null;
+      start = () => undefined;
+      stop = () => this.onend?.();
+      constructor() { recognition = this; }
+    }
+    const original = (window as Window & { SpeechRecognition?: unknown }).SpeechRecognition;
+    Object.defineProperty(window, "SpeechRecognition", { configurable: true, value: FakeRecognition });
+    try {
+      render(<App />);
+      await user.click(screen.getByRole("button", { name: "Use voice" }));
+      recognition?.onresult?.({ resultIndex: 0, results: [[{ transcript: "Call to make" }]] });
+      recognition?.onresult?.({ resultIndex: 0, results: [[{ transcript: "a hotel reservation" }]] });
+      expect(screen.getByRole("button", { name: "Stop listening" })).toBeInTheDocument();
+      await user.click(screen.getByRole("button", { name: "Stop listening" }));
+      expect(screen.getByLabelText(/Paste a notice/)).toHaveValue("Call to make a hotel reservation");
+      expect(screen.getAllByText("Call to make a hotel reservation").length).toBeGreaterThan(0);
+    } finally {
+      Object.defineProperty(window, "SpeechRecognition", { configurable: true, value: original });
+    }
   });
 });

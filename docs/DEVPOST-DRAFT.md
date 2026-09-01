@@ -14,7 +14,7 @@ Parents regularly need to turn school notices, calendar commitments and househol
 
 ## What it does
 
-The prototype starts with five deterministic fictional actions across school, calendar and home administration. A parent can also turn an unmatched local capture into a distinct Home action after confirming its deadline. A WebMCP-capable agent can:
+The prototype starts with five deterministic fictional actions across school, calendar and home administration. A parent can also turn an unmatched local capture into a distinct action in a chosen area after confirming its deadline. A WebMCP-capable agent can:
 
 1. filter a unified action queue by area, owner, status and deadline;
 2. open an action and explain its source, confidence, requirements and next step;

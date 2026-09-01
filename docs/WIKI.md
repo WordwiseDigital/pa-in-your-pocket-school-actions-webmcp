@@ -21,7 +21,7 @@ This is the durable project status page for the standalone WebMCP competition pr
 
 ## Local expansion candidate
 
-The `0.2.0` expansion is deployed and browser-accepted on the dedicated live URL. It expands the public prototype into one fictional household queue covering School, Calendar and Home. It adds paste/photo/voice capture review, confidence and next-step facts, simulated calendar/home approvals, an approval centre, and three unified PA WebMCP tools. Follow-up revisions also ensure unmatched captures are not assigned to an unrelated action and let a parent keep or remove a Home action while retaining the audit decision. Detailed base acceptance evidence is in [LIVE-PROMPT-EVIDENCE-2026-08-28.md](LIVE-PROMPT-EVIDENCE-2026-08-28.md).
+The `0.2.0` expansion is deployed and browser-accepted on the dedicated live URL. It expands the public prototype into one fictional household queue covering School, Calendar and Home. It adds paste/photo/voice capture review, confidence and next-step facts, simulated calendar/home approvals, an approval centre, and three unified PA WebMCP tools. Follow-up revisions also ensure unmatched captures are not assigned to an unrelated action: the parent chooses the area and deadline, then adds a distinct local action. A Home action can be kept or removed while retaining the audit decision. Detailed base acceptance evidence is in [LIVE-PROMPT-EVIDENCE-2026-08-28.md](LIVE-PROMPT-EVIDENCE-2026-08-28.md).
 
 ## Verified live acceptance
 
@@ -38,9 +38,9 @@ The `0.2.0` expansion is deployed and browser-accepted on the dedicated live URL
 
 ## Local candidate checks
 
-- `npm test`: 22 tests passed locally.
+- `npm test`: 24 tests passed locally.
 - `npm run build`: production build passed locally.
-- `1537ee0` is pushed to the public `main` branch and deployed to the dedicated Hosting site.
+- The latest capture and voice revision is pushed to the public `main` branch and deployed to the dedicated Hosting site.
 - Native Chrome discovery and prepare-only acceptance passed for the six-tool expanded build.
 
 ## Safety boundary
