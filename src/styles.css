@@ -213,11 +213,12 @@ footer p + p::before { content: " · "; }
 .next-step { margin-top: 14px; padding: 12px; border-radius: 12px; background: white; }
 .next-step strong { display: block; color: var(--teal); font-size: .78rem; line-height: 1.4; }
 .capture-review .text-button { padding-left: 0; margin-top: 8px; }
-.capture-link { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 18px 0; padding: 14px; border: 1px dashed #b9ceca; border-radius: 14px; background: #f0f8f5; }
-.capture-link strong, .capture-link span { display: block; }
-.capture-link strong { font-size: .8rem; }
-.capture-link span { margin-top: 4px; color: var(--muted); font-size: .72rem; line-height: 1.35; }
-.capture-link .secondary-button { flex: 0 0 auto; }
+.capture-resolution { margin-top: 14px; padding: 14px; border: 1px dashed #b9ceca; border-radius: 14px; background: #f0f8f5; }
+.capture-resolution strong, .capture-resolution > span { display: block; }
+.capture-resolution strong { font-size: .8rem; }
+.capture-resolution > span { margin-top: 4px; color: var(--muted); font-size: .72rem; line-height: 1.35; }
+.capture-resolution .field-label { margin-top: 12px; }
+.capture-resolution .secondary-button { margin-top: 2px; }
 .capture-empty, .approval-empty { display: grid; place-items: center; align-content: center; min-height: 175px; padding: 20px; border: 1px dashed #bfccc8; border-radius: 17px; color: var(--muted); text-align: center; }
 .capture-empty span, .approval-empty span { font-size: 1.5rem; color: #92aaa7; }
 .capture-empty p, .approval-empty p { max-width: 330px; margin: 8px 0 0; font-size: .8rem; line-height: 1.5; }

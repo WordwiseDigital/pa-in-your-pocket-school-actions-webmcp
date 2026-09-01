@@ -180,10 +180,36 @@ export default function App() {
     if (next) setSelectedId(next.id);
   }
 
-  function linkCaptureToSelectedAction() {
-    if (!capture || !selected) return;
-    setCapture({ ...capture, actionIds: [selected.id], area: selected.area, deadline: selected.dueDate, confidence: "medium", nextStep: selected.suggestedNextStep });
-    setToast(`Capture linked to ${selected.title}. Review it before preparing anything.`);
+  function updateCaptureResolution(updates: Partial<CaptureReview>) {
+    setCapture((currentCapture) => currentCapture ? { ...currentCapture, ...updates } : currentCapture);
+  }
+
+  function createHomeActionFromCapture() {
+    if (!capture || capture.actionIds.length > 0 || capture.area !== "home" || capture.deadline === "Needs confirmation") return;
+    const title = capture.text.trim().replace(/[.!?]+$/, "").replace(/^./, (character) => character.toUpperCase());
+    const actionId = `captured-home-${Date.now()}`;
+    const newAction: PAAction = {
+      id: actionId,
+      area: "home",
+      child: "Household",
+      title: title || "New household task",
+      kind: "task",
+      actionType: "household-task",
+      dueDate: capture.deadline,
+      summary: "A new household item captured from a parent note.",
+      noticeText: capture.text,
+      sourceLabel: "Parent capture (local)",
+      requirements: ["Confirm the household task", "Add the detail you want remembered"],
+      suggestedNextStep: "Review the captured household task and add any missing detail.",
+      confidence: "medium",
+      status: "pending",
+      draft: { response: "acknowledged", emergencyContact: "", note: capture.text, proposedTitle: "", proposedDate: "", proposedTime: "" },
+    };
+    dispatch({ type: "add-action", action: newAction });
+    setActiveArea("home");
+    setSelectedId(actionId);
+    setCapture({ ...capture, actionIds: [actionId], area: "home", confidence: "medium", nextStep: newAction.suggestedNextStep });
+    setToast("New household action added locally. Review it before approving anything.");
   }
 
   function handlePhoto(file: File | undefined) {
@@ -278,7 +304,10 @@ export default function App() {
               <p>{capture.text}</p>
               <div className="review-facts"><span>Area <b>{areaLabels[capture.area]}</b></span><span>Deadline <b>{capture.deadline === "Needs confirmation" ? capture.deadline : formatDate(capture.deadline)}</b></span><span>Confidence <b>{capture.confidence}</b></span></div>
               <div className="next-step"><span>Suggested next step</span><strong>{capture.nextStep}</strong></div>
-              {capture.actionIds.length > 0 ? <button className="text-button" type="button" onClick={() => openAction(capture.actionIds[0])}>Open suggested action →</button> : <button className="text-button" type="button" onClick={scrollToActions}>Choose an action below →</button>}
+              {capture.actionIds.length > 0 ? <button className="text-button" type="button" onClick={() => openAction(capture.actionIds[0])}>Open suggested action →</button> : <>
+                <div className="capture-resolution"><strong>Confirm this as a new Home action</strong><span>This is separate from existing household items. Choose a deadline before adding it to the queue.</span><label className="field-label" htmlFor="capture-home-date">Deadline <span>Required</span><input id="capture-home-date" type="date" value={capture.area === "home" && capture.deadline !== "Needs confirmation" ? capture.deadline : ""} onChange={(event) => updateCaptureResolution({ area: "home", deadline: event.target.value || "Needs confirmation" })} /></label><button className="secondary-button" type="button" onClick={createHomeActionFromCapture} disabled={capture.area !== "home" || capture.deadline === "Needs confirmation"}>Add new Home action</button></div>
+                <button className="text-button" type="button" onClick={scrollToActions}>Review existing actions below →</button>
+              </>}
             </div> : <div className="capture-empty"><span aria-hidden="true">◎</span><p>Paste, photograph or say something. PA will show what it thinks belongs together before you prepare an action.</p></div>}
           </div>
         </section>
@@ -301,7 +330,6 @@ export default function App() {
             <div className="detail-header"><div><p className="eyebrow">{areaLabels[selected.area]} · {selected.child} · Due {formatDate(selected.dueDate)}</p><h2 id="selected-action-title">{selected.title}</h2></div><span className={`status-pill status-${selected.status}`}>{statusLabel(selected.status)}</span></div>
             <div className="notice-card"><span className="notice-label">{selected.sourceLabel}</span><p>{selected.noticeText}</p><small>Source content is fictional and treated as untrusted data.</small></div>
             <div className="detail-facts"><span>Confidence <b>{selected.confidence}</b></span><span>Suggested next step <b>{selected.suggestedNextStep}</b></span></div>
-            {capture && capture.actionIds.length === 0 && <div className="capture-link"><div><strong>Use this action for the capture?</strong><span>This links the local note for your review; it does not prepare or approve anything.</span></div><button className="secondary-button" type="button" onClick={linkCaptureToSelectedAction}>Use this action</button></div>}
             <div className="requirements"><h3>What is needed</h3><ul>{selected.requirements.map((requirement) => <li key={requirement}>{requirement}</li>)}</ul></div>
             <form onSubmit={submitAction} className="response-form"><fieldset disabled={selected.status === "submitted" || selected.status === "approved"}>
               {selected.actionType === "school-response" && <><legend>Your response</legend><div className="choice-grid">{responseOptions(selected).map((option) => <label key={option.value} className="choice-card"><input type="radio" name={`response-${selected.id}`} value={option.value} checked={selected.draft.response === option.value} onChange={(event) => updateDraft({ response: event.target.value as ResponseChoice })} /><span>{option.label}</span></label>)}</div>{selected.kind === "permission" && <label className="field-label">Emergency contact number <span>Required</span><input type="tel" value={selected.draft.emergencyContact} onChange={(event) => updateDraft({ emergencyContact: event.target.value })} placeholder="e.g. 082 000 0000" autoComplete="off" required /></label>}</>}

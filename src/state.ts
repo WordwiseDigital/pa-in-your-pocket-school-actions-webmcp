@@ -5,6 +5,7 @@ const STORAGE_KEY = "pa-school-actions-webmcp-v2";
 
 export type AppAction =
   | { type: "agent-prepare"; actionId: string; draft: Partial<ActionDraft> }
+  | { type: "add-action"; action: PAAction }
   | { type: "parent-update"; actionId: string; draft: Partial<ActionDraft> }
   | { type: "parent-submit"; actionId: string }
   | { type: "parent-approve"; actionId: string }
@@ -50,6 +51,16 @@ function getCurrent(state: AppState, actionId: string): PAAction {
 
 export function reducer(state: AppState, action: AppAction): AppState {
   if (action.type === "reset") return freshInitialState();
+
+  if (action.type === "add-action") {
+    return {
+      actions: [...state.actions, action.action],
+      audit: [
+        auditEntry(action.action.id, "Parent", "captured", "The parent confirmed a new local household action from a captured note."),
+        ...state.audit,
+      ],
+    };
+  }
 
   const current = getCurrent(state, action.actionId);
   if (current.status === "submitted" && action.type !== "parent-update") {

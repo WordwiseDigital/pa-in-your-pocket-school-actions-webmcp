@@ -82,11 +82,13 @@ describe("manual portal", () => {
     expect(screen.getAllByText("Needs confirmation").length).toBeGreaterThan(0);
     expect(screen.getByText("Choose which household action this capture belongs to.")).toBeInTheDocument();
     expect(screen.getByText("low")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Choose an action below/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add new Home action" })).toBeDisabled();
 
     await user.click(screen.getByRole("tab", { name: "Home" }));
     expect(screen.getByRole("heading", { level: 2, name: "Follow up on kitchen repair quote" })).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Use this action" }));
+    fireEvent.change(screen.getByLabelText("Deadline Required"), { target: { value: "2026-09-04" } });
+    await user.click(screen.getByRole("button", { name: "Add new Home action" }));
     expect(screen.getByRole("button", { name: /Open suggested action/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: "Call the plumber about the shower" })).toBeInTheDocument();
   });
 });
