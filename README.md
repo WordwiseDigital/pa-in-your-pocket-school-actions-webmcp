@@ -13,7 +13,7 @@ School messages and household loose ends often scatter deadlines across differen
 - A parent can use the responsive portal manually.
 - A WebMCP-capable agent can list actions, inspect one and prepare its visible form or proposal.
 
-The agent cannot approve or submit. The parent can review and edit the prepared values, then must press the visible final button. The activity history records agent preparation and parent approval as separate events.
+The agent cannot approve, submit or remove an item. The parent can review and edit the prepared values, then must press the visible final button. For household items, the parent can either keep the item or remove it from the active list; the activity history records that decision without deleting the fictional audit trail.
 
 ## WebMCP tools
 
@@ -74,7 +74,7 @@ The current demo is hosted as the dedicated `pa-school-actions` site in the exis
 
 ## Status
 
-This is a standalone competition experiment, not a released PA in Your Pocket feature. The expanded household version is implemented locally but is not deployed yet. Local, repository, deployed and submitted states are tracked separately in the release checklist.
+This is a standalone competition experiment, not a released PA in Your Pocket feature. The expanded household version is deployed only to the dedicated competition Hosting site. Local, repository, deployed and submitted states are tracked separately in the release checklist.
 
 ## Licence
 

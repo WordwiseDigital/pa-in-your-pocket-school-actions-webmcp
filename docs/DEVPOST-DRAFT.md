@@ -20,7 +20,7 @@ The prototype starts with five deterministic fictional actions across school, ca
 2. open an action and explain its source, confidence, requirements and next step;
 3. prepare the visible school response, calendar proposal or household follow-up for review.
 
-The agent cannot perform the final approval or submission. The parent can edit the draft and must press the visible final button. A simple audit history separates “prepared by agent” from “approved/submitted by parent.”
+The agent cannot perform the final approval, submission or removal. The parent can edit the draft and must press the visible final button. For Home items, the parent can choose to keep the item or remove it from the active list. A simple audit history separates “prepared by agent” from “approved/submitted/removed by parent.”
 
 ## How we built it
 

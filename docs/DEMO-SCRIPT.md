@@ -52,6 +52,8 @@ Edit the proposal if needed, then press **Approve in demo**.
 
 Show the Parent audit entry and the no-external-system label.
 
+Optional safety branch: on a Home item, choose **No, remove from my list** and press the visible button. Show that it leaves the active queue while the audit history preserves the parent decision.
+
 ## 112–130 seconds — close
 
 Show the school tab and the original parent-only response boundary, then press **Reset demo**.
