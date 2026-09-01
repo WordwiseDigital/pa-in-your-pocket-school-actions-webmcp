@@ -5,9 +5,10 @@ import type { ActionArea, ActionDraft, ActionOwner, CaptureReview, PAAction, Res
 import { registerPAActionTools } from "./webmcp";
 
 const dateFormatter = new Intl.DateTimeFormat("en-ZA", { weekday: "short", day: "numeric", month: "short" });
-const areaLabels: Record<ActionArea | "all" | "unknown", string> = { all: "Everything", school: "School", calendar: "Calendar", home: "Home", unknown: "Needs confirmation" };
+const areaLabels: Record<ActionArea | "all" | "unknown", string> = { all: "Everything", school: "School", calendar: "Calendar", home: "Home", notes: "Notes", unknown: "Needs confirmation" };
 
 function formatDate(date: string): string {
+  if (!date) return "No deadline";
   return dateFormatter.format(new Date(`${date}T12:00:00`));
 }
 
@@ -22,8 +23,8 @@ function statusLabel(status: PAAction["status"]): string {
 function responseOptions(action: PAAction): { value: ResponseChoice; label: string }[] {
   if (action.kind === "checklist") return [{ value: "acknowledged", label: "I have reviewed the checklist" }];
   if (action.actionType === "household-task") return [
-    { value: "acknowledged", label: action.area === "calendar" ? "Yes, keep this reminder" : "Yes, keep this on my list" },
-    { value: "no", label: "No, remove from my list" },
+    { value: "acknowledged", label: action.area === "calendar" ? "Yes, keep this reminder" : action.area === "notes" ? "Yes, keep this note" : "Yes, keep this on my list" },
+    { value: "no", label: action.area === "notes" ? "No, remove from my notes" : "No, remove from my list" },
   ];
   return [
     { value: "yes", label: action.kind === "permission" ? "Yes, may attend" : "Yes, I consent" },
@@ -101,7 +102,7 @@ export default function App() {
     [activeArea, state.actions],
   );
   const selected = state.actions.find((action) => action.id === selectedId && action.status !== "dismissed") ?? visibleActions[0] ?? (activeArea === "all" ? state.actions.find((action) => action.status !== "dismissed") : undefined);
-  const dueThisWeek = state.actions.filter((action) => action.dueDate <= DEMO_WEEK_END && action.status === "pending");
+  const dueThisWeek = state.actions.filter((action) => action.dueDate && action.dueDate <= DEMO_WEEK_END && action.status === "pending");
   const prepared = state.actions.filter((action) => action.status === "prepared");
   const approvedCount = state.actions.filter((action) => action.status === "approved" || action.status === "submitted").length;
   const webMcpSupported = Boolean(document.modelContext?.registerTool);
@@ -144,7 +145,7 @@ export default function App() {
     event.preventDefault();
     if (!selected) return;
     try {
-      const isDismissal = selected.area === "home" && selected.draft.response === "no";
+      const isDismissal = (selected.area === "home" || selected.area === "notes") && selected.draft.response === "no";
       dispatch({ type: isDismissal ? "parent-dismiss" : selected.area === "school" ? "parent-submit" : "parent-approve", actionId: selected.id });
       setToast(isDismissal ? "Removed from this fictional list. The audit history keeps the parent decision." : selected.area === "school" ? "Submitted in this fictional demo. No information was sent anywhere." : "Approved in this fictional demo. No external system was changed.");
     } catch (error) {
@@ -195,7 +196,7 @@ export default function App() {
   }
 
   function createActionFromCapture() {
-    if (!capture || capture.actionIds.length > 0 || capture.area === "unknown" || capture.deadline === "Needs confirmation") return;
+    if (!capture || capture.actionIds.length > 0 || capture.area === "unknown" || (capture.area !== "notes" && capture.deadline === "Needs confirmation")) return;
     const title = capture.text.trim().replace(/[.!?]+$/, "").replace(/^./, (character) => character.toUpperCase());
     const isSchool = capture.area === "school";
     const actionId = `captured-${capture.area}-${Date.now()}`;
@@ -206,11 +207,11 @@ export default function App() {
       title: title || "New household task",
       kind: "task",
       actionType: isSchool ? "school-response" : "household-task",
-      dueDate: capture.deadline,
+      dueDate: capture.area === "notes" && capture.deadline === "Needs confirmation" ? "" : capture.deadline,
       summary: `A new ${areaLabels[capture.area].toLowerCase()} item captured from a parent note.`,
       noticeText: capture.text,
       sourceLabel: "Parent capture (local)",
-      requirements: isSchool ? ["Choose the school response", "Add the detail you want remembered"] : ["Confirm the next step", "Add the detail you want remembered"],
+      requirements: isSchool ? ["Choose the school response", "Add the detail you want remembered"] : capture.area === "notes" ? ["Keep the note in one place", "Add detail if needed"] : ["Confirm the next step", "Add the detail you want remembered"],
       suggestedNextStep: `Review the captured ${areaLabels[capture.area].toLowerCase()} item and add any missing detail.`,
       confidence: "medium",
       status: "pending",
@@ -220,7 +221,7 @@ export default function App() {
     setActiveArea(capture.area);
     setSelectedId(actionId);
     setCapture({ ...capture, actionIds: [actionId], confidence: "medium", nextStep: newAction.suggestedNextStep });
-    setToast(`New ${areaLabels[capture.area].toLowerCase()} action added locally. Review it before approving anything.`);
+    setToast(capture.area === "notes" ? "Note saved locally in Notes. Review it before approving anything." : `New ${areaLabels[capture.area].toLowerCase()} action added locally. Review it before approving anything.`);
   }
 
   function handlePhoto(file: File | undefined) {
@@ -304,14 +305,14 @@ export default function App() {
           <div className="hero-copy">
             <p className="eyebrow">Experimental WebMCP prototype</p>
             <h1>Turn household admin into one calm next step.</h1>
-            <p className="hero-intro">PA in Your Pocket gathers school, calendar and home tasks, then prepares the next useful move. You stay in control: review, edit and approve it yourself.</p>
+            <p className="hero-intro">PA in Your Pocket gathers school, calendar, home tasks and personal notes, then prepares the next useful move. You stay in control: review, edit and approve it yourself.</p>
             <div className="trust-row" aria-label="Demo boundaries"><span>Fictional data</span><span>Fictional children</span><span>Prepared before approval</span><span>No external submission</span></div>
           </div>
           <aside className="prompt-card" aria-label="Suggested agent prompt">
             <span className="prompt-icon" aria-hidden="true">✦</span>
             <p>Try asking your assistant:</p>
             <blockquote>“What needs my attention before Friday?”</blockquote>
-            <small>School, calendar and household actions share one fictional demo queue.</small>
+            <small>School, calendar, household actions and notes share one fictional demo queue.</small>
           </aside>
         </section>
 
@@ -342,10 +343,10 @@ export default function App() {
               {capture.previewUrl && <img src={capture.previewUrl} alt="Local capture preview" />}
               <strong>{capture.label}</strong>
               <p>{capture.text}</p>
-              <div className="review-facts"><span>Area <b>{areaLabels[capture.area]}</b></span><span>Deadline <b>{capture.deadline === "Needs confirmation" ? capture.deadline : formatDate(capture.deadline)}</b></span><span>Confidence <b>{capture.confidence}</b></span></div>
+              <div className="review-facts"><span>Area <b>{areaLabels[capture.area]}</b></span><span>Deadline <b>{capture.area === "notes" ? "No deadline needed" : capture.deadline === "Needs confirmation" ? capture.deadline : formatDate(capture.deadline)}</b></span><span>Confidence <b>{capture.confidence}</b></span></div>
               <div className="next-step"><span>Suggested next step</span><strong>{capture.nextStep}</strong></div>
               {capture.actionIds.length > 0 ? <button className="text-button" type="button" onClick={() => openAction(capture.actionIds[0])}>Open suggested action →</button> : <>
-                <div className="capture-resolution"><strong>Confirm this as a new action</strong><span>This is separate from existing items. Choose an area and deadline before adding it to the queue.</span><fieldset className="capture-area-choice"><legend>Area <span>Required</span></legend>{(["home", "calendar", "school"] as ActionArea[]).map((area) => <label key={area} className="choice-card"><input type="radio" name="capture-area" value={area} checked={capture.area === area} onChange={() => updateCaptureResolution({ area, deadline: capture.deadline })} /><span>{area === "calendar" ? "Calendar / reminder" : `${areaLabels[area]} admin`}</span></label>)}</fieldset><label className="field-label" htmlFor="capture-action-date">Deadline <span>Required</span><input id="capture-action-date" type="date" value={capture.deadline !== "Needs confirmation" ? capture.deadline : ""} onChange={(event) => updateCaptureResolution({ deadline: event.target.value || "Needs confirmation" })} /></label><button className="secondary-button" type="button" onClick={createActionFromCapture} disabled={capture.area === "unknown" || capture.deadline === "Needs confirmation"}>{capture.area === "unknown" ? "Choose an area first" : `Add new ${areaLabels[capture.area]} action`}</button></div>
+                <div className="capture-resolution"><strong>Confirm this as a new action</strong><span>This is separate from existing items. Choose an area before adding it to the queue. Notes do not need a deadline.</span><fieldset className="capture-area-choice"><legend>Area <span>Required</span></legend>{(["home", "calendar", "school", "notes"] as ActionArea[]).map((area) => <label key={area} className="choice-card"><input type="radio" name="capture-area" value={area} checked={capture.area === area} onChange={() => updateCaptureResolution({ area, deadline: capture.deadline })} /><span>{area === "calendar" ? "Calendar / reminder" : area === "notes" ? "Notes" : `${areaLabels[area]} admin`}</span></label>)}</fieldset><label className="field-label" htmlFor="capture-action-date">Deadline <span>{capture.area === "notes" ? "Optional" : "Required"}</span><input id="capture-action-date" type="date" value={capture.deadline !== "Needs confirmation" ? capture.deadline : ""} onChange={(event) => updateCaptureResolution({ deadline: event.target.value || "Needs confirmation" })} /></label><button className="secondary-button" type="button" onClick={createActionFromCapture} disabled={capture.area === "unknown" || (capture.area !== "notes" && capture.deadline === "Needs confirmation")}>{capture.area === "unknown" ? "Choose an area first" : capture.area === "notes" ? "Save note to Notes" : `Add new ${areaLabels[capture.area]} action`}</button></div>
                 <button className="text-button" type="button" onClick={scrollToActions}>Review existing actions below →</button>
               </>}
             </div> : <div className="capture-empty"><span aria-hidden="true">◎</span><p>Paste, photograph or say something. PA will show what it thinks belongs together before you prepare an action.</p></div>}
@@ -356,7 +357,7 @@ export default function App() {
           <div className="actions-panel">
             <div className="section-heading"><div><p className="eyebrow">Today / this week</p><h2>Next actions</h2></div><span>{visibleActions.length} fictional items</span></div>
             <div className="filter-tabs" role="tablist" aria-label="Filter actions">
-              {(["all", "school", "calendar", "home"] as (ActionArea | "all")[]).map((area) => <button key={area} type="button" role="tab" aria-selected={activeArea === area} className={activeArea === area ? "is-active" : ""} onClick={() => changeArea(area)}>{areaLabels[area]}</button>)}
+              {(["all", "school", "calendar", "home", "notes"] as (ActionArea | "all")[]).map((area) => <button key={area} type="button" role="tab" aria-selected={activeArea === area} className={activeArea === area ? "is-active" : ""} onClick={() => changeArea(area)}>{areaLabels[area]}</button>)}
             </div>
             <div className="action-list">
               {visibleActions.map((action) => <button key={action.id} type="button" className={`action-card ${selected?.id === action.id ? "is-selected" : ""}`} onClick={() => setSelectedId(action.id)} aria-pressed={selected?.id === action.id}>
@@ -376,7 +377,7 @@ export default function App() {
               {selected.actionType === "calendar-event" && <div className="calendar-fields"><label className="field-label">Event title <span>Fictional draft</span><input value={selected.draft.proposedTitle} onChange={(event) => updateDraft({ proposedTitle: event.target.value })} /></label><div className="split-fields"><label className="field-label">Date <input type="date" value={selected.draft.proposedDate} onChange={(event) => updateDraft({ proposedDate: event.target.value })} /></label><label className="field-label">Time <input type="time" value={selected.draft.proposedTime} onChange={(event) => updateDraft({ proposedTime: event.target.value })} /></label></div></div>}
               {selected.actionType === "household-task" && <div className="choice-grid">{responseOptions(selected).map((option) => <label key={option.value} className="choice-card"><input type="radio" name={`response-${selected.id}`} value={option.value} checked={selected.draft.response === option.value} onChange={(event) => updateDraft({ response: event.target.value as ResponseChoice })} /><span>{option.label}</span></label>)}</div>}
               <label className="field-label">{selected.area === "school" ? "Note to the school" : selected.area === "home" ? "Follow-up note" : "Note for your review"} <span>{selected.area === "home" && selected.draft.response !== "no" ? "Required" : "Optional"}</span><textarea value={selected.draft.note} onChange={(event) => updateDraft({ note: event.target.value })} placeholder="Add a note for this fictional demonstration" rows={3} /></label>
-            </fieldset><div className="submit-boundary"><div><strong>{selected.area === "school" ? "Only you can submit" : selected.area === "home" && selected.draft.response === "no" ? "Only you can remove it" : "Only you can approve"}</strong><span>The assistant can prepare this proposal, but the visible final decision stays with you.</span></div><button className="primary-button" type="submit" disabled={selected.status === "submitted" || selected.status === "approved" || selected.status === "dismissed" || !isDraftComplete(selected)}>{selected.status === "submitted" ? "Submitted in demo" : selected.status === "approved" ? "Approved in demo" : selected.status === "dismissed" ? "Removed from list" : selected.area === "home" && selected.draft.response === "no" ? "Remove from my list" : selected.area === "school" ? "Review complete — submit" : "Approve in demo"}</button></div></form>
+            </fieldset><div className="submit-boundary"><div><strong>{selected.area === "school" ? "Only you can submit" : (selected.area === "home" || selected.area === "notes") && selected.draft.response === "no" ? "Only you can remove it" : selected.area === "notes" ? "Only you can keep it" : "Only you can approve"}</strong><span>The assistant can prepare this proposal, but the visible final decision stays with you.</span></div><button className="primary-button" type="submit" disabled={selected.status === "submitted" || selected.status === "approved" || selected.status === "dismissed" || !isDraftComplete(selected)}>{selected.status === "submitted" ? "Submitted in demo" : selected.status === "approved" ? "Approved in demo" : selected.status === "dismissed" ? "Removed from list" : selected.area === "notes" && selected.draft.response === "no" ? "Remove from my notes" : selected.area === "home" && selected.draft.response === "no" ? "Remove from my list" : selected.area === "notes" ? "Keep note in Notes" : selected.area === "school" ? "Review complete — submit" : "Approve in demo"}</button></div></form>
           </article>}
         </section>
 

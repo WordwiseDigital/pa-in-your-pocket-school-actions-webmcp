@@ -159,7 +159,7 @@ export function filterActions(actions: PAAction[], filter: ActionFilter = {}): P
     if (filter.area ? filter.area !== "all" && action.area !== filter.area : action.area !== "school") return false;
     if (!filter.status && action.status === "dismissed") return false;
     if (filter.status && filter.status !== "all" && action.status !== filter.status) return false;
-    if (filter.dueBefore && action.dueDate > filter.dueBefore) return false;
+    if (filter.dueBefore && (!action.dueDate || action.dueDate > filter.dueBefore)) return false;
     return true;
   });
 }

@@ -220,7 +220,7 @@ footer p + p::before { content: " · "; }
 .capture-resolution strong, .capture-resolution > span { display: block; }
 .capture-resolution strong { font-size: .8rem; }
 .capture-resolution > span { margin-top: 4px; color: var(--muted); font-size: .72rem; line-height: 1.35; }
-.capture-area-choice { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 13px 0 0; padding: 0; border: 0; }
+.capture-area-choice { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 13px 0 0; padding: 0; border: 0; }
 .capture-area-choice legend { grid-column: 1 / -1; margin-bottom: 0; color: var(--ink); font-size: .72rem; font-weight: 800; }
 .capture-area-choice legend span { color: var(--muted); font-size: .65rem; font-weight: 600; }
 .capture-area-choice .choice-card { min-height: 42px; padding: 9px; font-size: .7rem; }
@@ -236,6 +236,7 @@ footer p + p::before { content: " · "; }
 .area-school { color: #9d4c3b; background: #ffe7de; }
 .area-calendar { color: #155e75; background: #dff3f4; }
 .area-home { color: #53672c; background: #edf5d7; }
+.area-notes { color: #6f557e; background: #eee5f4; }
 .child-household { background: #806c9c; }
 .detail-facts { margin-top: 18px; }
 .detail-facts span { background: #f3f7f4; }

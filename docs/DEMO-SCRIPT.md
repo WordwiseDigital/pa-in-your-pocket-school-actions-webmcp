@@ -6,7 +6,7 @@ Use this script for the expanded build after it has been deployed and the six-to
 
 “School notices, calendar commitments and household loose ends all compete for attention. PA in Your Pocket turns them into one calm next-action queue. Everything in this demonstration is fictional, and no external system is connected.”
 
-Show the title, the fictional-data labels and the School, Calendar and Home tabs.
+Show the title, the fictional-data labels and the School, Calendar, Home and Notes tabs.
 
 ## 15–35 seconds — capture without sorting
 
@@ -25,6 +25,8 @@ For a genuinely new instruction, use:
 > Call the plumber about the bathroom shower.
 
 This should show **Needs confirmation** rather than reuse the kitchen repair. Choose **Home admin**, choose a fictional deadline and click **Add new Home action** to show the new bathroom task entering the queue as its own item. For “Call to make a hotel reservation”, choose **Calendar / reminder** to demonstrate that a new capture is not forced into Home.
+
+For a simple memory, choose **Notes** instead. No deadline is required; click **Save note to Notes** and show the note in its own tab.
 
 ## 35–60 seconds — one household queue
 

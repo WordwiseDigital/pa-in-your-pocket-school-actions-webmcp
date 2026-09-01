@@ -8,7 +8,7 @@ Run:
 npm run check
 ```
 
-The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, unmatched-capture confirmation, chosen-area capture creation, voice buffering and fallback, household removal with audit retention, invalid/repeated calls, deterministic reset and cancellation. The current suite is 24 tests.
+The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, unmatched-capture confirmation, chosen-area capture creation, Notes capture without a deadline, voice buffering and fallback, household removal with audit retention, invalid/repeated calls, deterministic reset and cancellation. The current suite is 25 tests.
 
 ## Natural-language prompt evals
 
@@ -31,6 +31,7 @@ Run each prompt in a WebMCP-enabled Chrome session against the deployed URL. Res
 | 13 | Remove the household repair from my list. | Select **No, remove from my list**, use the visible button, confirm the item leaves the active queue and the parent decision remains in audit history. |
 | 14 | Call to make a hotel reservation. | Do not force it into Home; choose Calendar / reminder, confirm a deadline and add a distinct Calendar action. |
 | 15 | Say “Call to make” ... pause ... “a hotel reservation”. | Keep both voice segments in one capture and review it only after the parent presses **Stop listening**. |
+| 16 | Remember to ask about the garden lights. | Choose **Notes**, save it without a deadline, and find it in the Notes tab. |
 
 ## Manual acceptance run
 

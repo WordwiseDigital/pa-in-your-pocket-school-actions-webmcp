@@ -127,6 +127,23 @@ describe("manual portal", () => {
     expect(screen.getAllByText("Calendar", { selector: ".area-tag" }).length).toBeGreaterThan(0);
   });
 
+  it("lets an unmatched note be saved in the Notes area without a deadline", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByLabelText(/Paste a notice/), "Remember to ask about the garden lights.");
+    await user.click(screen.getByRole("button", { name: "Review this note" }));
+    await user.click(screen.getByRole("radio", { name: "Notes" }));
+
+    const save = screen.getByRole("button", { name: "Save note to Notes" });
+    expect(save).toBeEnabled();
+    await user.click(save);
+
+    expect(screen.getByRole("tab", { name: "Notes" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("heading", { level: 2, name: "Remember to ask about the garden lights" })).toBeInTheDocument();
+    expect(screen.getAllByText(/No deadline/).length).toBeGreaterThan(0);
+  });
+
   it("keeps multiple voice segments together until listening stops", async () => {
     const user = userEvent.setup();
     let recognition: FakeRecognition | undefined;

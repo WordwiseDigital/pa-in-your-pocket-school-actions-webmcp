@@ -161,11 +161,11 @@ export async function registerPAActionTools(
     {
       name: "list_pa_actions",
       title: "List PA actions",
-      description: "List fictional school, calendar and household actions in one calm next-action queue.",
+      description: "List fictional school, calendar, home and notes actions in one calm next-action queue.",
       inputSchema: {
         type: "object",
         properties: {
-          area: { type: "string", enum: ["school", "calendar", "home", "all"] },
+          area: { type: "string", enum: ["school", "calendar", "home", "notes", "all"] },
           child: { type: "string", enum: ["Ava", "Noah", "Household", "all"] },
           status: { type: "string", enum: ["pending", "prepared", "approved", "submitted", "dismissed", "all"] },
           dueBefore: { type: "string", description: "Inclusive deadline in YYYY-MM-DD format." },

@@ -1,6 +1,6 @@
 export type ChildName = "Ava" | "Noah";
 export type ActionOwner = ChildName | "Household";
-export type ActionArea = "school" | "calendar" | "home";
+export type ActionArea = "school" | "calendar" | "home" | "notes";
 export type ActionStatus = "pending" | "prepared" | "approved" | "submitted" | "dismissed";
 export type ActionKind =
   | "permission"

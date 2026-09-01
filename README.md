@@ -1,6 +1,6 @@
 # PA in Your Pocket: Household Actions
 
-An experimental WebMCP competition prototype that turns school, calendar and home administration into one calm next-action queue while leaving the final decision with the parent.
+An experimental WebMCP competition prototype that turns school, calendar, home administration and personal notes into one calm next-action queue while leaving the final decision with the parent.
 
 > **Demo only:** Ava, Noah, household notes, all prepared actions and every approval are fictional. Nothing is sent to a school, calendar, payment service, vendor or PA in Your Pocket production system.
 
@@ -22,7 +22,7 @@ The agent cannot approve, submit or remove an item. The parent can review and ed
 | `list_school_actions` | Filters actions by child, status and inclusive due date | Read-only |
 | `get_school_action_details` | Opens an action and returns its requirements and fictional notice | Read-only; notice is marked untrusted |
 | `prepare_school_action` | Opens and fills the visible response form | Changes only local draft state; never submits |
-| `list_pa_actions` | Filters the unified school, calendar and home queue | Read-only |
+| `list_pa_actions` | Filters the unified school, calendar, home and notes queue | Read-only |
 | `get_pa_action_details` | Opens a unified action and returns source, confidence and next step | Read-only; source is marked untrusted |
 | `prepare_pa_action` | Prepares a calendar or household proposal | Changes only local draft state; never approves or writes externally |
 

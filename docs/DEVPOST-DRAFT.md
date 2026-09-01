@@ -6,7 +6,7 @@ PA in Your Pocket: Household Actions
 
 ## Tagline
 
-A human-controlled household assistant that turns school, calendar and home admin into one calm next step without taking away the parent's final say.
+A human-controlled household assistant that turns school, calendar, home admin and personal notes into one calm next step without taking away the parent's final say.
 
 ## Inspiration
 
@@ -14,7 +14,7 @@ Parents regularly need to turn school notices, calendar commitments and househol
 
 ## What it does
 
-The prototype starts with five deterministic fictional actions across school, calendar and home administration. A parent can also turn an unmatched local capture into a distinct action in a chosen area after confirming its deadline. A WebMCP-capable agent can:
+The prototype starts with five deterministic fictional actions across school, calendar and home administration. A parent can also turn an unmatched local capture into a distinct action in a chosen area; Notes can be saved without a deadline. A WebMCP-capable agent can:
 
 1. filter a unified action queue by area, owner, status and deadline;
 2. open an action and explain its source, confidence, requirements and next step;

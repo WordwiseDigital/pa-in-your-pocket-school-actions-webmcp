@@ -21,7 +21,7 @@ React reducer + localStorage
 Fictional deterministic household state
 ```
 
-`src/data.ts` is the only starting dataset. `src/state.ts` owns all transitions. `src/webmcp.ts` adapts the same state operations into the three legacy school tools plus three unified PA tools. The manual interface and the agent therefore act on one visible source of truth.
+`src/data.ts` is the only starting dataset. `src/state.ts` owns all transitions. `src/webmcp.ts` adapts the same state operations into the three legacy school tools plus three unified PA tools. The manual interface and the agent therefore act on one visible source of truth, including the Notes area.
 
 ## State transitions
 

@@ -29,7 +29,7 @@ It may also receive `emergencyContact` and `note`. It selects the action, fills 
 
 ### `list_pa_actions`
 
-Read-only. Lists the unified fictional queue. Optional filters are `area` (`school`, `calendar`, `home` or `all`), `child` (`Ava`, `Noah`, `Household` or `all`), `status` (`pending`, `prepared`, `approved`, `submitted`, `dismissed` or `all`) and inclusive `dueBefore`. Removed items are hidden when no status filter is supplied.
+Read-only. Lists the unified fictional queue. Optional filters are `area` (`school`, `calendar`, `home`, `notes` or `all`), `child` (`Ava`, `Noah`, `Household` or `all`), `status` (`pending`, `prepared`, `approved`, `submitted`, `dismissed` or `all`) and inclusive `dueBefore`. Removed items are hidden when no status filter is supplied; no-deadline notes are excluded when `dueBefore` is supplied.
 
 ### `get_pa_action_details`
 
