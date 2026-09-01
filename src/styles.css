@@ -111,6 +111,7 @@ h1 { margin-bottom: 20px; max-width: 780px; font-size: clamp(2.4rem, 5vw, 4.9rem
 .status-pending { color: #8d4a30; background: #fff0e8; }
 .status-prepared { color: #155e75; background: #dff3f4; }
 .status-submitted { color: #25613b; background: #dcf5e6; }
+.status-dismissed { color: #6f6570; background: #eee9ef; }
 .action-card h3 { margin: 17px 0 8px; font-size: 1.03rem; letter-spacing: -.015em; }
 .action-card p { margin-bottom: 16px; color: var(--muted); line-height: 1.48; font-size: .82rem; }
 .action-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: .71rem; }

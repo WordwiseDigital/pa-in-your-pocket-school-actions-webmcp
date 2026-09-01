@@ -1,7 +1,7 @@
 export type ChildName = "Ava" | "Noah";
 export type ActionOwner = ChildName | "Household";
 export type ActionArea = "school" | "calendar" | "home";
-export type ActionStatus = "pending" | "prepared" | "approved" | "submitted";
+export type ActionStatus = "pending" | "prepared" | "approved" | "submitted" | "dismissed";
 export type ActionKind =
   | "permission"
   | "consent"
@@ -26,7 +26,7 @@ export interface AuditEntry {
   id: string;
   actionId: string;
   actor: "Agent" | "Parent" | "System";
-  event: "captured" | "prepared" | "approved" | "submitted" | "reset";
+  event: "captured" | "prepared" | "approved" | "submitted" | "dismissed" | "reset";
   timestamp: string;
   detail: string;
 }

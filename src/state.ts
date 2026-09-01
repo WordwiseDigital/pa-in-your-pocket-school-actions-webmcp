@@ -9,6 +9,7 @@ export type AppAction =
   | { type: "parent-update"; actionId: string; draft: Partial<ActionDraft> }
   | { type: "parent-submit"; actionId: string }
   | { type: "parent-approve"; actionId: string }
+  | { type: "parent-dismiss"; actionId: string }
   | { type: "reset" };
 
 function auditEntry(
@@ -40,6 +41,7 @@ export function isDraftComplete(action: PAAction): boolean {
         action.draft.proposedTime.trim(),
     );
   }
+  if (action.draft.response === "no") return true;
   return Boolean(action.draft.response && action.draft.note.trim());
 }
 
@@ -69,6 +71,9 @@ export function reducer(state: AppState, action: AppAction): AppState {
   if (current.status === "approved" && action.type !== "parent-update") {
     throw new Error("Completed actions cannot be prepared or approved again.");
   }
+  if (current.status === "dismissed" && action.type !== "parent-update") {
+    throw new Error("Removed actions cannot be prepared or changed again.");
+  }
 
   if (action.type === "parent-update") {
     return {
@@ -94,6 +99,23 @@ export function reducer(state: AppState, action: AppAction): AppState {
           "Agent",
           "prepared",
           "The agent prepared a visible draft for parent review. No external action was taken.",
+        ),
+        ...state.audit,
+      ],
+    };
+  }
+
+  if (action.type === "parent-dismiss") {
+    return {
+      actions: state.actions.map((item) =>
+        item.id === action.actionId ? { ...item, status: "dismissed" as const } : item,
+      ),
+      audit: [
+        auditEntry(
+          action.actionId,
+          "Parent",
+          "dismissed",
+          "The parent removed this item from the visible household list.",
         ),
         ...state.audit,
       ],
@@ -135,6 +157,7 @@ export function filterActions(actions: PAAction[], filter: ActionFilter = {}): P
     if (filter.child && filter.child !== "all" && action.child !== filter.child) return false;
     // An omitted area retains the original School Actions API behaviour.
     if (filter.area ? filter.area !== "all" && action.area !== filter.area : action.area !== "school") return false;
+    if (!filter.status && action.status === "dismissed") return false;
     if (filter.status && filter.status !== "all" && action.status !== filter.status) return false;
     if (filter.dueBefore && action.dueDate > filter.dueBefore) return false;
     return true;

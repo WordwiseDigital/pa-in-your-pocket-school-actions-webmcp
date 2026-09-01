@@ -167,7 +167,7 @@ export async function registerPAActionTools(
         properties: {
           area: { type: "string", enum: ["school", "calendar", "home", "all"] },
           child: { type: "string", enum: ["Ava", "Noah", "Household", "all"] },
-          status: { type: "string", enum: ["pending", "prepared", "approved", "submitted", "all"] },
+          status: { type: "string", enum: ["pending", "prepared", "approved", "submitted", "dismissed", "all"] },
           dueBefore: { type: "string", description: "Inclusive deadline in YYYY-MM-DD format." },
         },
         additionalProperties: false,

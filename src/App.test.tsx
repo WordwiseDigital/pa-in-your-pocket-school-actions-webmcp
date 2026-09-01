@@ -91,4 +91,21 @@ describe("manual portal", () => {
     expect(screen.getByRole("button", { name: /Open suggested action/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "Call the plumber about the shower" })).toBeInTheDocument();
   });
+
+  it("lets a parent remove a Home action without deleting its audit history", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByRole("tab", { name: "Home" }));
+    await user.click(screen.getByRole("button", { name: /Follow up on kitchen repair quote/ }));
+    await user.click(screen.getByRole("radio", { name: "No, remove from my list" }));
+
+    const remove = screen.getByRole("button", { name: "Remove from my list" });
+    expect(remove).toBeEnabled();
+    await user.click(remove);
+
+    expect(screen.getByRole("status")).toHaveTextContent("Removed from this fictional list");
+    expect(screen.queryByRole("button", { name: /Follow up on kitchen repair quote/ })).not.toBeInTheDocument();
+    expect(screen.getByText("The parent removed this item from the visible household list.")).toBeInTheDocument();
+  });
 });

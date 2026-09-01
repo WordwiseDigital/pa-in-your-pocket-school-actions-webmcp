@@ -15,12 +15,16 @@ function statusLabel(status: PAAction["status"]): string {
   if (status === "prepared") return "Ready for approval";
   if (status === "approved") return "Approved in demo";
   if (status === "submitted") return "Submitted in demo";
+  if (status === "dismissed") return "Removed from list";
   return "Needs attention";
 }
 
 function responseOptions(action: PAAction): { value: ResponseChoice; label: string }[] {
   if (action.kind === "checklist") return [{ value: "acknowledged", label: "I have reviewed the checklist" }];
-  if (action.area === "home") return [{ value: "acknowledged", label: "Yes, keep this on my list" }];
+  if (action.area === "home") return [
+    { value: "acknowledged", label: "Yes, keep this on my list" },
+    { value: "no", label: "No, remove from my list" },
+  ];
   return [
     { value: "yes", label: action.kind === "permission" ? "Yes, may attend" : "Yes, I consent" },
     { value: "no", label: action.kind === "permission" ? "No, may not attend" : "No, I do not consent" },
@@ -89,10 +93,10 @@ export default function App() {
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
 
   const visibleActions = useMemo(
-    () => state.actions.filter((action) => activeArea === "all" || action.area === activeArea),
+    () => state.actions.filter((action) => action.status !== "dismissed" && (activeArea === "all" || action.area === activeArea)),
     [activeArea, state.actions],
   );
-  const selected = state.actions.find((action) => action.id === selectedId) ?? visibleActions[0] ?? state.actions[0];
+  const selected = state.actions.find((action) => action.id === selectedId && action.status !== "dismissed") ?? visibleActions[0] ?? (activeArea === "all" ? state.actions.find((action) => action.status !== "dismissed") : undefined);
   const dueThisWeek = state.actions.filter((action) => action.dueDate <= DEMO_WEEK_END && action.status === "pending");
   const prepared = state.actions.filter((action) => action.status === "prepared");
   const approvedCount = state.actions.filter((action) => action.status === "approved" || action.status === "submitted").length;
@@ -136,8 +140,9 @@ export default function App() {
     event.preventDefault();
     if (!selected) return;
     try {
-      dispatch({ type: selected.area === "school" ? "parent-submit" : "parent-approve", actionId: selected.id });
-      setToast(selected.area === "school" ? "Submitted in this fictional demo. No information was sent anywhere." : "Approved in this fictional demo. No external system was changed.");
+      const isDismissal = selected.area === "home" && selected.draft.response === "no";
+      dispatch({ type: isDismissal ? "parent-dismiss" : selected.area === "school" ? "parent-submit" : "parent-approve", actionId: selected.id });
+      setToast(isDismissal ? "Removed from this fictional list. The audit history keeps the parent decision." : selected.area === "school" ? "Submitted in this fictional demo. No information was sent anywhere." : "Approved in this fictional demo. No external system was changed.");
     } catch (error) {
       setToast(error instanceof Error ? error.message : "Please complete the required fields.");
     }
@@ -174,9 +179,10 @@ export default function App() {
 
   function changeArea(area: ActionArea | "all") {
     setActiveArea(area);
+    const eligible = state.actions.filter((action) => action.status !== "dismissed");
     const next = area === "all"
-      ? state.actions.find((action) => action.id === selectedId) ?? state.actions[0]
-      : state.actions.find((action) => action.area === area);
+      ? eligible.find((action) => action.id === selectedId) ?? eligible[0]
+      : eligible.find((action) => action.area === area);
     if (next) setSelectedId(next.id);
   }
 
@@ -331,12 +337,12 @@ export default function App() {
             <div className="notice-card"><span className="notice-label">{selected.sourceLabel}</span><p>{selected.noticeText}</p><small>Source content is fictional and treated as untrusted data.</small></div>
             <div className="detail-facts"><span>Confidence <b>{selected.confidence}</b></span><span>Suggested next step <b>{selected.suggestedNextStep}</b></span></div>
             <div className="requirements"><h3>What is needed</h3><ul>{selected.requirements.map((requirement) => <li key={requirement}>{requirement}</li>)}</ul></div>
-            <form onSubmit={submitAction} className="response-form"><fieldset disabled={selected.status === "submitted" || selected.status === "approved"}>
+            <form onSubmit={submitAction} className="response-form"><fieldset disabled={selected.status === "submitted" || selected.status === "approved" || selected.status === "dismissed"}>
               {selected.actionType === "school-response" && <><legend>Your response</legend><div className="choice-grid">{responseOptions(selected).map((option) => <label key={option.value} className="choice-card"><input type="radio" name={`response-${selected.id}`} value={option.value} checked={selected.draft.response === option.value} onChange={(event) => updateDraft({ response: event.target.value as ResponseChoice })} /><span>{option.label}</span></label>)}</div>{selected.kind === "permission" && <label className="field-label">Emergency contact number <span>Required</span><input type="tel" value={selected.draft.emergencyContact} onChange={(event) => updateDraft({ emergencyContact: event.target.value })} placeholder="e.g. 082 000 0000" autoComplete="off" required /></label>}</>}
               {selected.actionType === "calendar-event" && <div className="calendar-fields"><label className="field-label">Event title <span>Fictional draft</span><input value={selected.draft.proposedTitle} onChange={(event) => updateDraft({ proposedTitle: event.target.value })} /></label><div className="split-fields"><label className="field-label">Date <input type="date" value={selected.draft.proposedDate} onChange={(event) => updateDraft({ proposedDate: event.target.value })} /></label><label className="field-label">Time <input type="time" value={selected.draft.proposedTime} onChange={(event) => updateDraft({ proposedTime: event.target.value })} /></label></div></div>}
               {selected.actionType === "household-task" && <div className="choice-grid">{responseOptions(selected).map((option) => <label key={option.value} className="choice-card"><input type="radio" name={`response-${selected.id}`} value={option.value} checked={selected.draft.response === option.value} onChange={(event) => updateDraft({ response: event.target.value as ResponseChoice })} /><span>{option.label}</span></label>)}</div>}
-              <label className="field-label">{selected.area === "school" ? "Note to the school" : selected.area === "home" ? "Follow-up note" : "Note for your review"} <span>{selected.area === "home" ? "Required" : "Optional"}</span><textarea value={selected.draft.note} onChange={(event) => updateDraft({ note: event.target.value })} placeholder="Add a note for this fictional demonstration" rows={3} /></label>
-            </fieldset><div className="submit-boundary"><div><strong>{selected.area === "school" ? "Only you can submit" : "Only you can approve"}</strong><span>The assistant can prepare this proposal, but the visible final decision stays with you.</span></div><button className="primary-button" type="submit" disabled={selected.status === "submitted" || selected.status === "approved" || !isDraftComplete(selected)}>{selected.status === "submitted" ? "Submitted in demo" : selected.status === "approved" ? "Approved in demo" : selected.area === "school" ? "Review complete — submit" : "Approve in demo"}</button></div></form>
+              <label className="field-label">{selected.area === "school" ? "Note to the school" : selected.area === "home" ? "Follow-up note" : "Note for your review"} <span>{selected.area === "home" && selected.draft.response !== "no" ? "Required" : "Optional"}</span><textarea value={selected.draft.note} onChange={(event) => updateDraft({ note: event.target.value })} placeholder="Add a note for this fictional demonstration" rows={3} /></label>
+            </fieldset><div className="submit-boundary"><div><strong>{selected.area === "school" ? "Only you can submit" : selected.area === "home" && selected.draft.response === "no" ? "Only you can remove it" : "Only you can approve"}</strong><span>The assistant can prepare this proposal, but the visible final decision stays with you.</span></div><button className="primary-button" type="submit" disabled={selected.status === "submitted" || selected.status === "approved" || selected.status === "dismissed" || !isDraftComplete(selected)}>{selected.status === "submitted" ? "Submitted in demo" : selected.status === "approved" ? "Approved in demo" : selected.status === "dismissed" ? "Removed from list" : selected.area === "home" && selected.draft.response === "no" ? "Remove from my list" : selected.area === "school" ? "Review complete — submit" : "Approve in demo"}</button></div></form>
           </article>}
         </section>
 
