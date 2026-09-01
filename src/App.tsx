@@ -5,7 +5,7 @@ import type { ActionArea, ActionDraft, ActionOwner, CaptureReview, PAAction, Res
 import { registerPAActionTools } from "./webmcp";
 
 const dateFormatter = new Intl.DateTimeFormat("en-ZA", { weekday: "short", day: "numeric", month: "short" });
-const areaLabels: Record<ActionArea | "all", string> = { all: "Everything", school: "School", calendar: "Calendar", home: "Home" };
+const areaLabels: Record<ActionArea | "all" | "unknown", string> = { all: "Everything", school: "School", calendar: "Calendar", home: "Home", unknown: "Needs confirmation" };
 
 function formatDate(date: string): string {
   return dateFormatter.format(new Date(`${date}T12:00:00`));
@@ -36,7 +36,7 @@ function selectedCaptureActions(text: string, actions: PAAction[]): PAAction[] {
     const terms = `${action.title} ${action.summary} ${action.area} ${action.child}`.toLowerCase();
     return terms.split(/\s+/).some((term) => term.length > 4 && lower.includes(term));
   });
-  return matches.length > 0 ? matches : [actions.find((action) => action.status === "pending") ?? actions[0]].filter(Boolean);
+  return matches;
 }
 
 function createCaptureReview(
@@ -55,8 +55,8 @@ function createCaptureReview(
     text,
     actionIds: matched.map((action) => action.id),
     deadline: first?.dueDate ?? "Needs confirmation",
-    area: first?.area ?? "home",
-    confidence: kind === "photo" || matched.length === 0 ? "medium" : "high",
+    area: first?.area ?? "unknown",
+    confidence: kind === "photo" ? "medium" : matched.length === 0 ? "low" : "high",
     nextStep: first?.suggestedNextStep ?? "Choose which household action this capture belongs to.",
     previewUrl,
   };
@@ -162,6 +162,10 @@ export default function App() {
 
   function openAction(actionId: string) {
     setSelectedId(actionId);
+    scrollToActions();
+  }
+
+  function scrollToActions() {
     requestAnimationFrame(() => {
       const workspace = document.getElementById("action-workspace");
       if (typeof workspace?.scrollIntoView === "function") workspace.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -260,7 +264,7 @@ export default function App() {
               <p>{capture.text}</p>
               <div className="review-facts"><span>Area <b>{areaLabels[capture.area]}</b></span><span>Deadline <b>{capture.deadline === "Needs confirmation" ? capture.deadline : formatDate(capture.deadline)}</b></span><span>Confidence <b>{capture.confidence}</b></span></div>
               <div className="next-step"><span>Suggested next step</span><strong>{capture.nextStep}</strong></div>
-              <button className="text-button" type="button" onClick={() => openAction(capture.actionIds[0] ?? selectedId)}>Open suggested action →</button>
+              {capture.actionIds.length > 0 ? <button className="text-button" type="button" onClick={() => openAction(capture.actionIds[0])}>Open suggested action →</button> : <button className="text-button" type="button" onClick={scrollToActions}>Choose an action below →</button>}
             </div> : <div className="capture-empty"><span aria-hidden="true">◎</span><p>Paste, photograph or say something. PA will show what it thinks belongs together before you prepare an action.</p></div>}
           </div>
         </section>

@@ -11,7 +11,7 @@ export type ActionKind =
   | "task";
 export type ActionType = "school-response" | "calendar-event" | "household-task";
 export type ResponseChoice = "yes" | "no" | "acknowledged" | "confirm" | "";
-export type Confidence = "high" | "medium";
+export type Confidence = "high" | "medium" | "low";
 
 export interface ActionDraft {
   response: ResponseChoice;
@@ -71,7 +71,7 @@ export interface CaptureReview {
   text: string;
   actionIds: string[];
   deadline: string;
-  area: ActionArea;
+  area: ActionArea | "unknown";
   confidence: Confidence;
   nextStep: string;
   previewUrl?: string;

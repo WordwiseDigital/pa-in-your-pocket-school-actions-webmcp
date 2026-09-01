@@ -71,4 +71,17 @@ describe("manual portal", () => {
     await user.click(screen.getByRole("button", { name: "Use voice" }));
     expect(screen.getByRole("status")).toHaveTextContent("Voice capture is not available");
   });
+
+  it("does not assign an unrelated capture to the wrong action", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByLabelText(/Paste a notice/), "Call the plumber about the shower.");
+    await user.click(screen.getByRole("button", { name: "Review this note" }));
+
+    expect(screen.getAllByText("Needs confirmation").length).toBeGreaterThan(0);
+    expect(screen.getByText("Choose which household action this capture belongs to.")).toBeInTheDocument();
+    expect(screen.getByText("low")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Choose an action below/ })).toBeInTheDocument();
+  });
 });
