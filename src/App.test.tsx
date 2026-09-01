@@ -83,5 +83,10 @@ describe("manual portal", () => {
     expect(screen.getByText("Choose which household action this capture belongs to.")).toBeInTheDocument();
     expect(screen.getByText("low")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Choose an action below/ })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: "Home" }));
+    expect(screen.getByRole("heading", { level: 2, name: "Follow up on kitchen repair quote" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Use this action" }));
+    expect(screen.getByRole("button", { name: /Open suggested action/ })).toBeInTheDocument();
   });
 });
