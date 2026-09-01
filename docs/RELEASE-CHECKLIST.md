@@ -5,7 +5,7 @@ This file deliberately separates build, publication and submission evidence.
 ## Local build
 
 - [x] Dependencies installed with a lockfile
-- [x] Automated tests pass (20 tests on 28 August 2026)
+- [x] Automated tests pass (21 tests on 1 September 2026)
 - [x] Production build passes
 - [x] Manual portal works without WebMCP at desktop and 390px mobile widths
 - [x] Six WebMCP tools pass automated contract coverage and live native Chrome acceptance
@@ -16,6 +16,7 @@ This file deliberately separates build, publication and submission evidence.
 - [x] Unified school, calendar and home action model
 - [x] Local paste, photo preview and browser voice capture fallback
 - [x] Capture review with source, deadline, owner, confidence and next step
+- [x] Unmatched captures require confirmation and can become distinct local Home actions
 - [x] Prepared-action approval centre with simulated-only approval
 - [x] Deploy the expanded build and repeat native Chrome WebMCP acceptance
 - [x] Update live prompt evidence for the expanded build

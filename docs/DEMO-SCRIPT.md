@@ -20,6 +20,12 @@ Click **Review this note**.
 
 Show the capture review and open the suggested action.
 
+For a genuinely new household instruction, use:
+
+> Call the plumber about the bathroom shower.
+
+This should show **Needs confirmation** rather than reuse the kitchen repair. Choose a fictional deadline and click **Add new Home action** to show the new bathroom task entering the queue as its own item.
+
 ## 35–60 seconds — one household queue
 
 “The same interface brings together school responses, a family calendar check-in and a household repair follow-up. I can filter by area, see what is due, and open the source and requirements.”
@@ -35,6 +41,8 @@ Ask the WebMCP-capable agent:
 “The agent can prepare the visible proposal, but the result explicitly says it was not submitted and no external write occurred.”
 
 Show **Ready for approval**, the prepared proposal and the **Approval centre**.
+
+If you created the plumber capture, you can instead ask the agent to list Home actions and prepare the new bathroom task. This demonstrates that a parent-created action becomes available to the same WebMCP queue without being confused with the kitchen repair.
 
 ## 90–112 seconds — human approval
 

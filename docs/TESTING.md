@@ -8,7 +8,7 @@ Run:
 npm run check
 ```
 
-The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, voice fallback, invalid/repeated calls, deterministic reset and cancellation. The current suite is 20 tests.
+The suite covers deadline filtering, unified area/owner filtering, agent preparation without submission or approval, preservation of parent edits, parent-only school submission, simulated household approval, local capture review, unmatched-capture confirmation, voice fallback, invalid/repeated calls, deterministic reset and cancellation. The current suite is 21 tests.
 
 ## Natural-language prompt evals
 
@@ -27,6 +27,7 @@ Run each prompt in a WebMCP-enabled Chrome session against the deployed URL. Res
 | 9 | What needs my attention before Friday? | Call `list_pa_actions` with the unified queue and report school, calendar and home items without claiming completion. |
 | 10 | Prepare the family calendar check-in. | Call `prepare_pa_action`; show the visible proposal and return `submitted: false`, `externalWrite: false`. |
 | 11 | Add a household note from this photo or voice capture. | Keep the capture local, show preview/transcript and confidence, and require review before preparing an action. |
+| 12 | Call the plumber about the shower. | Do not match it to the kitchen repair; confirm a deadline and add a distinct local Home action. |
 
 ## Manual acceptance run
 

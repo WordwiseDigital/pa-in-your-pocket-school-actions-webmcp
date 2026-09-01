@@ -8,7 +8,7 @@ Live demo: [pa-school-actions.web.app](https://pa-school-actions.web.app/)
 
 ## The idea
 
-School messages and household loose ends often scatter deadlines across different places. This prototype turns five fictional actions into one calm action list that works in two ways:
+School messages and household loose ends often scatter deadlines across different places. This prototype turns five seeded fictional actions—and any new locally confirmed Home capture—into one calm action list that works in two ways:
 
 - A parent can use the responsive portal manually.
 - A WebMCP-capable agent can list actions, inspect one and prepare its visible form or proposal.
