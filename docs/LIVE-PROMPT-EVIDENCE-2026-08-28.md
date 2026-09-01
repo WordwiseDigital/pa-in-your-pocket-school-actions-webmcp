@@ -28,7 +28,7 @@ All names, contact details, notes and actions in this evidence are fictional dem
 
 ## Expanded 0.2.0 acceptance
 
-Source revision: `0eeb3be`
+Source revision: `fa64a92` (follow-up UI fix deployed 1 September 2026)
 Deployment: Firebase Hosting site `pa-school-actions` in project `pa-in-your-pocket-app`
 Browser: external Chrome 151 with native WebMCP enabled
 

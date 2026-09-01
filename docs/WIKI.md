@@ -1,6 +1,6 @@
 # PA in Your Pocket: Household Actions — project wiki
 
-Last updated: 28 August 2026
+Last updated: 1 September 2026
 
 ## Purpose
 
@@ -33,14 +33,14 @@ The `0.2.0` expansion is deployed and browser-accepted on the dedicated live URL
 - The visible parent button alone changed the fictional action to submitted and created the Parent audit event.
 - Reset restored three pending actions and an empty audit.
 - Five natural-language prompt scenarios passed live; detailed results are in [LIVE-PROMPT-EVIDENCE-2026-08-28.md](LIVE-PROMPT-EVIDENCE-2026-08-28.md).
-- Expanded revision `0eeb3be` passed live HTTP/header checks and native Chrome discovery for all six tools.
+- Expanded revision `fa64a92` includes the live UI fix that makes **Open suggested action** select and scroll to the matched action; the six-tool HTTP/header and native Chrome acceptance remains valid.
 - The expanded live tab was left with three prepared fictional drafts, zero approvals and zero submissions.
 
 ## Local candidate checks
 
 - `npm test`: 20 tests passed locally.
 - `npm run build`: production build passed locally.
-- `0eeb3be` is pushed to the public `main` branch and deployed to the dedicated Hosting site.
+- `fa64a92` is pushed to the public `main` branch and deployed to the dedicated Hosting site.
 - Native Chrome discovery and prepare-only acceptance passed for the six-tool expanded build.
 
 ## Safety boundary
